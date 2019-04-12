@@ -1,16 +1,12 @@
 package com.dashboard.service;
 
-import org.springframework.http.ResponseEntity;
-
-import com.dashboard.model.User;
-
-
 
 public interface UserService {
 	
-	String ReadUser(String userid);
-	void AddUser(String name,String password,String email,String organisation);
-	void UpdateUser(String userid,String name,String password,String email,String organisation);
-	void DeleteUser(int userid);
+	String readUser(String userid);
+	String readUserFromId(String userid);
+	String addUser(String name,String password,String email,String organisation);
+	String updateUser(String userid,String name,String password,String email,String organisation);
+	String deleteUser(String userid);
 	
 }

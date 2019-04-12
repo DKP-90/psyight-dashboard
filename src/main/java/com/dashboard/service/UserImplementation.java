@@ -2,7 +2,6 @@ package com.dashboard.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.dashboard.model.User;
@@ -29,7 +28,7 @@ public class UserImplementation implements UserService {
 	@Autowired
 	UserRepo urobj;
 	@Override
-	public void AddUser(String name, String password, String email, String organisation) {
+	public String addUser(String name, String password, String email, String organisation) {
 		
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
@@ -39,7 +38,7 @@ public class UserImplementation implements UserService {
 		uobj.setEmail(email);
 		uobj.setOrganisation(organisation);
 		uobj.setName(name);
-		uobj.setPassword(password);
+		uobj.setPassword(MD5(password));
 		session.save(uobj);		
 		tx.commit();
 		session.close();
@@ -47,6 +46,7 @@ public class UserImplementation implements UserService {
 		 } catch(Exception ex) 
 		 { 
 			 logger.error(ex.toString());
+			 return("{Response:200,transaction:false,error-log:"+ex.toString()+"}");
           } finally {        	  
          try {
         if(session != null)
@@ -54,11 +54,11 @@ public class UserImplementation implements UserService {
          	tx.commit();         	
          } catch(Exception ex) {}
      }
-	 
+		 return("{Response:200,transaction:true,error-log:''}");
 	}
 
 	@Override
-	public void UpdateUser(String userid, String name, String password, String email, String organisation) {
+	public String updateUser(String userid, String name, String password, String email, String organisation) {
 
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
@@ -73,6 +73,7 @@ public class UserImplementation implements UserService {
 		 } catch(Exception ex) 
 		 { 
 			 logger.error(ex.toString());
+			 return("{Response:200,transaction:false,error-log:"+ex.toString()+"}");
           } finally {        	  
          try {
         if(session != null)
@@ -80,10 +81,11 @@ public class UserImplementation implements UserService {
          	tx.commit();         	
          } catch(Exception ex) {}
      }
+		 return("{Response:200,transaction:true,error-log:''}");
 	}
 
 	@Override
-	public void DeleteUser(int userid) {
+	public String deleteUser(String userid) {
 
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();		
@@ -91,7 +93,7 @@ public class UserImplementation implements UserService {
 		 try {
 		User uobj=new User();
 		
-		uobj.setUserid(userid);
+		uobj.setUserid(Integer.parseInt(userid));
 		session.delete(uobj);
 		
 		tx.commit();
@@ -99,6 +101,7 @@ public class UserImplementation implements UserService {
 		 } catch(Exception ex) 
 		 { 
 			 logger.error(ex.toString());
+			 return("{Response:200,transaction:false,error-log:"+ex.toString()+"}");
           } finally {        	  
          try {
         if(session != null)
@@ -106,30 +109,28 @@ public class UserImplementation implements UserService {
          	tx.commit();         	
          } catch(Exception ex) {}
      }
-		
+		return("{Response:200,transaction:true,error-log:''}");
 	}
 
 	@Override
-	public String ReadUser(String userid) {
+	public String readUser(String userid) {
 
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
-		User uobj=new User();
 		String json=null ;
-		 List list ;
+		 List<?> list ;
 		 try {
-			 Query query = session.createQuery("from User");
+			 Query<?> query = session.createQuery("FROM User");
 		     list = query.list();			 
 			
-		     json = new Gson().toJson(list);
-			// uobj = (User) session.load(User.class, 1);
-			System.out.println(json);
+		     json = new Gson().toJson(list);			
 		tx.commit();
 		session.close();
 		 } catch(Exception ex) 
 		 { 
 			 logger.error(ex.toString());
+			 return("{Response:200,transaction:false,error-log:"+ex.toString()+"}");
           } finally {        	  
          try {
         if(session != null)
@@ -141,5 +142,51 @@ public class UserImplementation implements UserService {
 
 		
 	}
+
+	@Override
+	public String readUserFromId(String userid) {
+
+		SessionFactory sf = HibernateUtil.getSessionFactory();
+		Session session = sf.openSession();
+		Transaction tx = session.beginTransaction();
+		String json=null ;
+		 List<?> list ;
+		 try {
+			 Query<?> query = session.createQuery("FROM User U WHERE U.userid="+userid);
+		     list = query.list();			     
+			
+		     json = new Gson().toJson(list);
+		
+		tx.commit();
+		session.close();
+		 } catch(Exception ex) 
+		 { 
+			 logger.error(ex.toString());
+			 return("{Response:200,transaction:false,error-log:"+ex.toString()+"}");
+          } finally {        	  
+         try {
+        if(session != null)
+        	session.close();
+         	tx.commit();         	
+         } catch(Exception ex) {}
+     }
+       return json;
+
+		
+	}
+	
+	public String MD5(String md5) {
+		   try {
+		        java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
+		        byte[] array = md.digest(md5.getBytes());
+		        StringBuffer sb = new StringBuffer();
+		        for (int i = 0; i < array.length; ++i) {
+		          sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
+		       }
+		        return sb.toString();
+		    } catch (java.security.NoSuchAlgorithmException e) {
+		    }
+		    return null;
+		}
 
 }
