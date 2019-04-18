@@ -3,10 +3,11 @@ package com.dashboard.service;
 
 public interface UserService {
 	
-	String readUser(String userid);
-	String readUserFromId(String userid);
-	String addUser(String name,String password,String email,String organisation);
-	String updateUser(String userid,String name,String password,String email,String organisation);
-	String deleteUser(String userid);
+	String read(int start,int limit);
+	String readFromId(String userid);
+	String login(String email,String password);
+	String add(String name,String password,String email,String organisation);
+	String update(String userid,String name,String password,String email,String organisation);
+	String delete(String userid);
 	
 }

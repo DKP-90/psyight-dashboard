@@ -1,10 +1,12 @@
 package com.dashboard.model;
 
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="user")
@@ -15,8 +17,12 @@ public class User
 private int userid;
 private String name;
 private String password;
+@Column(unique = true)
 private String email;
 private String organisation;
+private int active;
+@Transient
+private String token;
 
 
 
@@ -36,6 +42,12 @@ public void setUserid(int userid) {
 }
 public String getName() {
 	return name;
+}
+public int getActive() {
+	return active;
+}
+public void setActive(int active) {
+	this.active = active;
 }
 public void setName(String name) {
 	this.name = name;
