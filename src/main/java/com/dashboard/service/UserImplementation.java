@@ -199,7 +199,7 @@ public class UserImplementation implements UserService {
 			cr.add(Restrictions.eq("password", MD5(password)));
 			 list = cr.list();
 			
-			if (list.size() > 0)
+			if (!list.isEmpty())
 			{
 				HashMap<String, Object> map = new HashMap<String, Object>();
 				map.put("data",list);

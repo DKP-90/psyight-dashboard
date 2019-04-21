@@ -1,12 +1,20 @@
 package com.dashboard.model;
 
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name="user")
@@ -21,18 +29,17 @@ private String password;
 private String email;
 private String organisation;
 private int active;
-@Transient
-private String token;
+@CreationTimestamp
+private LocalDateTime timestamp;
 
+@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+@JoinColumn(name="userid")
+private List<Groups> groups;
 
+@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+@JoinColumn(name="userid")
+private List<Products> products;
 
-//public User(String name, String password, String email, String organisation) {
-//	super();
-//	this.name = name;
-//	this.password = password;
-//	this.email = email;
-//	this.organisation = organisation;
-//}
 
 public int getUserid() {
 	return userid;

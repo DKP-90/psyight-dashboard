@@ -13,5 +13,7 @@
         <property name="format_sql">true</property>
         <property name="hibernate.hbm2ddl.auto">update</property>      
         <mapping class="com.dashboard.model.User" />
+        <mapping class="com.dashboard.model.Groups" />
+        <mapping class="com.dashboard.model.Products" />
     </session-factory>
 </hibernate-configuration>
