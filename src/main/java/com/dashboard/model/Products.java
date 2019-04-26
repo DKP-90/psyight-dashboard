@@ -25,7 +25,7 @@ public class Products {
 	private String definition;
 	
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-	@JoinColumn(name="pid")
+	@JoinColumn(name="pid", nullable = false, insertable = false)
 	private List<ProductImage> images;
 	
 	public int getPid() {

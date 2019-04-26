@@ -6,15 +6,25 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.dashboard.model.Products;
 import com.dashboard.service.GroupsService;
+import com.dashboard.service.ImportImplementation;
+import com.dashboard.service.ImportService;
 import com.dashboard.service.UserService;
+
 import com.google.gson.Gson;
+
 
 @RestController
 public class MainController {
@@ -61,12 +71,15 @@ public class MainController {
 	
 	@Autowired
 	GroupsService gobj;
+	@Autowired
+	ImportService ims;
+
 	
 
 	/// ADD GROUP
 	@RequestMapping(value = "/group/add/", method = RequestMethod.POST, produces = "application/json")
 	public String addGroup(HttpServletRequest request) {
-		return gobj.add(request.getParameter("groupname"), request.getParameter("definition"));
+		return gobj.add(request.getParameter("groupname"), request.getParameter("definition"));		
 	}
 
 
@@ -81,9 +94,10 @@ public class MainController {
 	public String updateGroup(HttpServletRequest request) {
 		Gson gson = new Gson();
 		String jsonInString = request.getParameter("products").toString();
+		//String jsonInString = "{'gid': 1,'userid': 1,'active': 1,'definition':'sdgfdgd','product_name':'aaaaaaa'}";
 		Products prd = gson.fromJson(jsonInString, Products.class);
-		List prl=new ArrayList();
-		prl.add(prd);
+		List<Products> prl=new ArrayList<Products>();
+		prl.add(prd);			
 		return gobj.update(Integer.parseInt(request.getParameter("gid")), request.getParameter("groupname"),prl);
 	}
 
@@ -93,6 +107,14 @@ public class MainController {
 		return gobj.delete(gid);
 	}
 	
+	@RequestMapping(value = "/group/xlsx/", method = RequestMethod.GET, produces = "application/json")
+	public String readxls() {
+		return ims.ImportXlsxs("1");
+	}
+	
+
+
+
 	
 	
 }

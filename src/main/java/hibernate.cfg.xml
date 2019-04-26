@@ -15,5 +15,6 @@
         <mapping class="com.dashboard.model.User" />
         <mapping class="com.dashboard.model.Groups" />
         <mapping class="com.dashboard.model.Products" />
+        <mapping class="com.dashboard.model.ProductImage" />
     </session-factory>
 </hibernate-configuration>

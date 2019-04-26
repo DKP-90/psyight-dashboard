@@ -4,6 +4,8 @@ management:
       exposure:
         include: '*'
 
+
+
 logging:
   level:
      org.springframework.web: DEBUG
@@ -19,11 +21,12 @@ spring:
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
   application:
     name: psyight-dashboard
-  
+
+ 
 server:
   port: 8081 
 

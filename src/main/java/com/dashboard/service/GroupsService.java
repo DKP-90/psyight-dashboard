@@ -8,4 +8,6 @@ public interface GroupsService {
 	String add(String groupname,String definition);
 	String update(int gid,String groupname,List<?> products);
 	String delete(int gid);
+	
+	String ImportXlsx(String userid);
 }

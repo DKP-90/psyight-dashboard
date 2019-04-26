@@ -28,7 +28,7 @@ public class Groups {
 	private String response_train;
 	
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-	@JoinColumn(name="gid")
+	@JoinColumn(name="gid", nullable = false, insertable = false)
 	private List<Products> products;
 	
 	public List<Products> getProducts() {
