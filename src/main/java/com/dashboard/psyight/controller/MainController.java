@@ -71,8 +71,7 @@ public class MainController {
 	
 	@Autowired
 	GroupsService gobj;
-	@Autowired
-	ImportService ims;
+	
 
 	
 
@@ -107,10 +106,7 @@ public class MainController {
 		return gobj.delete(gid);
 	}
 	
-	@RequestMapping(value = "/group/xlsx/", method = RequestMethod.GET, produces = "application/json")
-	public String readxls() {
-		return ims.ImportXlsxs("1");
-	}
+
 	
 
 
