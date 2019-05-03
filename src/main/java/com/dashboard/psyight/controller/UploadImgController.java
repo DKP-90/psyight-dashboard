@@ -2,6 +2,7 @@ package com.dashboard.psyight.controller;
 
 import com.dashboard.model.UploadModel;
 import com.dashboard.service.ImportService;
+import com.dashboard.service.ProductImageService;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
@@ -31,6 +32,8 @@ public class UploadImgController {
 
 	@Autowired
 	ImportService ims;
+	@Autowired
+	ProductImageService pis;
 	
     private final Logger logger = LoggerFactory.getLogger(UploadImgController.class);
 
@@ -41,7 +44,7 @@ public class UploadImgController {
     @PostMapping("/img/upload")
     // If not @RestController, uncomment this
     //@ResponseBody
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile uploadfile, @RequestParam("userid") String userid) {
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile uploadfile, @RequestParam("userid") String userid , @RequestParam("pid") int pid) {
 
         logger.debug("Single file upload!");
 
@@ -53,7 +56,8 @@ public class UploadImgController {
         	 String generatedString = RandomStringUtils.randomAlphabetic(10).replaceAll("[^a-zA-Z0-9]", "") ;
         	 File dir = new File("C:\\Users\\Backend\\Desktop\\psyight\\img\\" + userid + "\\");
         	    if (!dir.exists()) dir.mkdirs();        	    
-            saveUploadedFiles(Arrays.asList(uploadfile),"C:\\Users\\Backend\\Desktop\\psyight\\img\\" + userid + "\\" + generatedString + ".jpg");          
+            saveUploadedFiles(Arrays.asList(uploadfile),"C:\\Users\\Backend\\Desktop\\psyight\\img\\" + userid + "\\" + generatedString + ".jpg");    
+            pis.addimage(generatedString + ".jpg", pid);
 
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

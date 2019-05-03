@@ -24,7 +24,7 @@ public class Products {
 	private int active;
 	private String definition;
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	@JoinColumn(name="pid", nullable = false, insertable = false)
 	private List<ProductImage> images;
 	
@@ -42,6 +42,12 @@ public class Products {
 	}
 	public int getUserid() {
 		return userid;
+	}
+	public List<ProductImage> getImages() {
+		return images;
+	}
+	public void setImages(List<ProductImage> images) {
+		this.images = images;
 	}
 	public void setUserid(int userid) {
 		this.userid = userid;

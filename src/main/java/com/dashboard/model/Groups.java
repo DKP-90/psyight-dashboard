@@ -27,7 +27,7 @@ public class Groups {
 	private String response_create;
 	private String response_train;
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	@JoinColumn(name="gid", nullable = false, insertable = false)
 	private List<Products> products;
 	

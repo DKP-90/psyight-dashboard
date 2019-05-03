@@ -14,7 +14,7 @@ public class ProductImage {
 	@GeneratedValue
 	private int iim;
 	private int pid;
-	private int filename;
+	private String filename;
 	private int active;
 	
 	
@@ -30,10 +30,10 @@ public class ProductImage {
 	public void setPid(int pid) {
 		this.pid = pid;
 	}
-	public int getFilename() {
+	public String getFilename() {
 		return filename;
 	}
-	public void setFilename(int filename) {
+	public void setFilename(String filename) {
 		this.filename = filename;
 	}
 	public int getActive() {
