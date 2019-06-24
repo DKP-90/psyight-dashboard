@@ -1,5 +1,6 @@
 package com.dashboard.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -8,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dashboard.model.Groups;
@@ -15,14 +17,17 @@ import com.dashboard.model.ProductImage;
 import com.dashboard.model.Products;
 import com.dashboard.repository.HibernateUtil;
 import com.google.gson.Gson;
+import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import ch.qos.logback.classic.pattern.ClassOfCallerConverter;
 import clarifai2.api.ClarifaiBuilder;
 import clarifai2.api.ClarifaiClient;
 import clarifai2.api.ClarifaiResponse;
 import clarifai2.dto.input.ClarifaiInput;
 import clarifai2.dto.model.ConceptModel;
+import clarifai2.dto.model.ModelVersion;
 import clarifai2.dto.model.output_info.ConceptOutputInfo;
 import clarifai2.dto.prediction.Concept;
 
@@ -36,9 +41,10 @@ public class ClarifaiImplementation implements ClarifaiService {
 	
 	private static Logger logger = LogManager.getLogger(ClarifaiImplementation.class);
 	final ClarifaiClient client = new ClarifaiBuilder("00ae75c236404f52bf701d3540b7efe7").buildSync();
-	
+	 OkHttpClient okclient = new OkHttpClient();
+	 
 	@Override
-	public String train(int gid, String userid) {
+	public String train(int gid, String userid) {	
 		
 		
 		SessionFactory sf = HibernateUtil.getSessionFactory();
@@ -76,36 +82,81 @@ public class ClarifaiImplementation implements ClarifaiService {
 			
 			for ( Products prd: listp) {		        
 		         listm=prd.getImages();
+		         /// ADD CONCEPTS WITH IMAGE
 		         for ( ProductImage prdi: listm) {
-//						client.addInputs()
-//					    .plus(
-//					       // ClarifaiInput.forImage("http://localhost:8081/userid/"+userid+"/image/"+prdi.getFilename().toString())
-//					    		 ClarifaiInput.forImage("https://media.zigcdn.com/media/model/2016/Feb/"+prdi.getFilename().toString())
-//					            .withConcepts(Concept.forID(String.valueOf(prd.getPid())))
-//					    )
-//					    .executeSync();						
+						client.addInputs()
+					    .plus(
+					        ClarifaiInput.forImage("http://localhost:8081/userid/"+userid+"/image/"+prdi.getFilename().toString())
+					    //		 ClarifaiInput.forImage("https://media.zigcdn.com/media/model/2016/Feb/"+prdi.getFilename().toString())
+					            .withConcepts(Concept.forID(String.valueOf(prd.getPid())))
+					    )
+					    .executeSync();						
 			      }
-		         
-		        ClarifaiResponse<ConceptModel> resp= client.createModel("pets")
+		         /// ADD MODEL WITH CONCEPT
+		        ClarifaiResponse<ConceptModel> resp= client.createModel(String.valueOf(gid))
 		         .withOutputInfo(ConceptOutputInfo.forConcepts(
 		             Concept.forID(String.valueOf(prd.getPid()))
 		         ))
 		         .executeSync();
-		   //    String jsonx = new Gson().toJson(resp);
-		   System.out.println(resp.get().appID());
+		  
 		      }
-	//		client.trainModel("{model_id}").executeSync();
+		    String response = new Gson().toJson(client.trainModel("{"+ String.valueOf(gid)+"}").executeSync());
+		    {
 
+			      Request request = new Request.Builder()
+			        .url("http://localhost:8081/group/add/?groupname=&gid=" + String.valueOf(gid) + "&products=definition=&product_name=&response_create=&response_train="+response)
+			        .put(null)
+			        .addHeader("Accept", "*/*")
+			        .addHeader("Cache-Control", "no-cache")
+			        .addHeader("Host", "localhost:8081")
+			        .addHeader("accept-encoding", "gzip, deflate")
+			        .addHeader("content-length", "")
+			        .addHeader("Connection", "keep-alive")
+			        .addHeader("cache-control", "no-cache")
+			        .build();
+
+			     okclient.newCall(request).execute();
+			      }
 		}
 		catch(Exception e)
 		{}
-		System.out.println(list.get(0).getGroup_name());
-		return null;
+		return ("{Response:200,transaction:true,error-log:''}");
 	}
 
 	@Override
-	public String detect(String userid) {
-		// TODO Auto-generated method stub
+	public String detect(String userid,String gid) {
+		
+		Groups gp=new Groups();
+
+		  try {
+
+		  		Request request = new Request.Builder()
+		  		        .url("http://localhost:8081/user/ReadGroupFromId/userid/"+userid+"/groupid/"+gid+"/")
+		  		        .put(null)
+		  		        .addHeader("Accept", "*/*")
+		  		        .addHeader("Cache-Control", "no-cache")
+		  		        .addHeader("Host", "localhost:8081")
+		  		        .addHeader("accept-encoding", "gzip, deflate")
+		  		        .addHeader("content-length", "")
+		  		        .addHeader("Connection", "keep-alive")
+		  		        .addHeader("cache-control", "no-cache")
+		  		        .build();
+				Response response = okclient.newCall(request).execute();
+				gp=new Gson().fromJson(response.toString(),Groups.class);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		      
+		ModelVersion modelVersion = client.getModelVersionByID("MODEL_ID", "MODEL_VERSION_ID")
+        .executeSync()
+        .get();
+
+		client.predict(String.valueOf(gp.getGid()))
+        .withVersion(modelVersion)
+        .withInputs(ClarifaiInput.forImage("https://samples.clarifai.com/metro-north.jpg"))
+        .executeSync();
+
 		return null;
 	}
 

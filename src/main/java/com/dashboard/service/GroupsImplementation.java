@@ -58,7 +58,7 @@ public class GroupsImplementation implements GroupsService {
 	}
 	
 	@Override
-	public String update(int gid,String groupname, List products) {
+	public String update(int gid,String groupname, List products,String response_create,String response_train) {
 
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
@@ -66,7 +66,9 @@ public class GroupsImplementation implements GroupsService {
 		try {
 			Object g = session.get(Groups.class, gid);			
 			Groups gobj = (Groups) g;
+			if(groupname!=null)
 			gobj.setGroup_name(groupname);
+			
 			gobj.setProducts(products);			
 			session.persist(gobj);
 			tx.commit();

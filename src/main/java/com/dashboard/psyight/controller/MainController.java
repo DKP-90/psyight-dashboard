@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.dashboard.model.Products;
 import com.dashboard.service.ClarifaiService;
@@ -93,11 +94,10 @@ public class MainController {
 	public String updateGroup(HttpServletRequest request) {
 		Gson gson = new Gson();
 		String jsonInString = request.getParameter("products").toString();
-		//String jsonInString = "{'gid': 1,'userid': 1,'active': 1,'definition':'sdgfdgd','product_name':'aaaaaaa'}";
 		Products prd = gson.fromJson(jsonInString, Products.class);
 		List<Products> prl=new ArrayList<Products>();
 		prl.add(prd);			
-		return gobj.update(Integer.parseInt(request.getParameter("gid")), request.getParameter("groupname"),prl);
+		return gobj.update(Integer.parseInt(request.getParameter("gid")), request.getParameter("groupname"),prl,request.getParameter("response_create"),request.getParameter("response_train"));
 	}
 
 	/// DELETE GROUP WITH ID
