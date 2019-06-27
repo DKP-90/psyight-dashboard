@@ -73,7 +73,7 @@ public class ClarifaiImplementation implements ClarifaiService {
 		List<Products> listp;	
 		List<ProductImage> listm;
 		
-		listp= list.get(0).getProducts();
+		listp=  (List<Products>) list.get(0).getProducts();
 		listp.get(0).getPid();
 		
 		try
@@ -81,7 +81,7 @@ public class ClarifaiImplementation implements ClarifaiService {
 			
 			
 			for ( Products prd: listp) {		        
-		         listm=prd.getImages();
+		         listm=(List<ProductImage>) prd.getImages();
 		         /// ADD CONCEPTS WITH IMAGE
 		         for ( ProductImage prdi: listm) {
 						client.addInputs()

@@ -8,10 +8,16 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dashboard.model.Groups;
+import com.dashboard.model.User;
 import com.dashboard.repository.HibernateUtil;
+import com.dashboard.response.defaultresponse.DefaultResponse;
+import com.dashboard.response.readusergroup.Payload;
+import com.dashboard.response.readusergroup.Product;
+import com.dashboard.response.readusergroup.ReadUserGroup;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -28,10 +34,17 @@ public class GroupsImplementation implements GroupsService {
 
 	private static Logger logger = LogManager.getLogger(GroupsImplementation.class);
 
-	
+@Autowired
+DefaultResponse defaultresponse;
+@Autowired
+ReadUserGroup readusergroup;
+@Autowired
+Product product;
+@Autowired
+Payload payload;
 	@Override
 	public String add(String groupname, String definition) {
-
+		String response="";
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
@@ -44,8 +57,11 @@ public class GroupsImplementation implements GroupsService {
 			tx.commit();
 			session.close();
 		} catch (Exception ex) {
-			logger.error(ex.toString());
-			return ("{Response:200,transaction:false,error-log:" + ex.toString() + "}");
+			logger.error(ex.toString());	
+			defaultresponse.setErrormsg(ex.toString());
+			defaultresponse.setStatus(false);
+			response = new Gson().toJson(defaultresponse);
+			return (response);
 		} finally {
 			try {
 				if (session != null)
@@ -54,12 +70,15 @@ public class GroupsImplementation implements GroupsService {
 			} catch (Exception ex) {
 			}
 		}
-		return ("{Response:200,transaction:true,error-log:''}");
+		defaultresponse.setErrormsg("");
+		defaultresponse.setStatus(true);
+		response = new Gson().toJson(defaultresponse);
+		return (response);
 	}
 	
 	@Override
 	public String update(int gid,String groupname, List products,String response_create,String response_train) {
-
+		String response="";
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
@@ -74,8 +93,11 @@ public class GroupsImplementation implements GroupsService {
 			tx.commit();
 			session.close();
 		} catch (Exception ex) {
-			logger.error(ex.toString());
-			return ("{Response:200,transaction:false,error-log:" + ex.toString() + "}");
+			logger.error(ex.toString());	
+			defaultresponse.setErrormsg(ex.toString());
+			defaultresponse.setStatus(false);
+			response = new Gson().toJson(defaultresponse);
+			return (response);
 		} finally {
 			try {
 				if (session != null)
@@ -84,11 +106,15 @@ public class GroupsImplementation implements GroupsService {
 			} catch (Exception ex) {
 			}
 		}
-		return ("{Response:200,transaction:true,error-log:''}");
+		defaultresponse.setErrormsg("");
+		defaultresponse.setStatus(true);
+		response = new Gson().toJson(defaultresponse);
+		return (response);
 	}
 	
 	@Override
 	public String delete(int gid) {
+		String response="";
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
@@ -101,8 +127,11 @@ public class GroupsImplementation implements GroupsService {
 			tx.commit();
 			session.close();
 		} catch (Exception ex) {
-			logger.error(ex.toString());
-			return ("{Response:200,transaction:false,error-log:" + ex.toString() + "}");
+			logger.error(ex.toString());	
+			defaultresponse.setErrormsg(ex.toString());
+			defaultresponse.setStatus(false);
+			response = new Gson().toJson(defaultresponse);
+			return (response);
 		} finally {
 			try {
 				if (session != null)
@@ -111,7 +140,10 @@ public class GroupsImplementation implements GroupsService {
 			} catch (Exception ex) {
 			}
 		}
-		return ("{Response:200,transaction:true,error-log:''}");
+		defaultresponse.setErrormsg("");
+		defaultresponse.setStatus(true);
+		response = new Gson().toJson(defaultresponse);
+		return (response);
 	}
 	
 	@Override
@@ -123,16 +155,30 @@ public class GroupsImplementation implements GroupsService {
 	@Override
 	public String readFromId(String userid, int gid) {
 
+		String response="";
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
-		String json = null;
 		List<?> list;
 		try {
-			Query<?> query = session.createQuery("FROM Groups G WHERE G.userid=" + userid +" AND G.gid=" + gid);
-			list = query.list();
-
-			json = new Gson().toJson(list);
+			Query<?> query = session.createQuery("SELECT G FROM Groups G JOIN FETCH G.products P JOIN FETCH P.images WHERE G.userid=" + userid +" AND G.gid=" + gid);
+			
+			List<Groups> group=  (List<Groups>) query.list();
+			
+			readusergroup.setErrormsg("");
+			readusergroup.setPagination(false);
+			readusergroup.setStatus(true);
+			for(Groups item:group )
+			{
+				payload.setGid(item.getGid());
+				payload.setGroupName(item.getGroup_name());
+				payload.setUserid(item.getUserid());
+				payload.setActive(item.getActive());
+				payload.setProducts(item.getProducts());
+				
+			}
+			readusergroup.setPayload(payload);
+			response = new Gson().toJson(readusergroup);
 
 			tx.commit();
 			session.close();
@@ -147,14 +193,14 @@ public class GroupsImplementation implements GroupsService {
 			} catch (Exception ex) {
 			}
 		}
-		return json;
+		return response;
 
 	}
 	
 
 	@Override
 	public String ImportXlsx(String userid)  {
-		
+		String response="";
 		try
 		{
 	    File excelFile = new File("1.xlsx");
@@ -185,11 +231,18 @@ public class GroupsImplementation implements GroupsService {
 	    workbook.close();
 	fis.close();
 		
-	}catch (Exception e) {
-		// TODO: handle exception
+	}catch (Exception ex) {
+		logger.error(ex.toString());	
+		defaultresponse.setErrormsg(ex.toString());
+		defaultresponse.setStatus(false);
+		response = new Gson().toJson(defaultresponse);
+		return (response);
 	}
 		
-		return ("{Response:200,transaction:true,error-log:''}");
+		defaultresponse.setErrormsg("");
+		defaultresponse.setStatus(true);
+		response = new Gson().toJson(defaultresponse);
+		return (response);
 	}
 
 

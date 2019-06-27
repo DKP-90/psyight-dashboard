@@ -1,6 +1,7 @@
 package com.dashboard.model;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -11,9 +12,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 
 
 @Entity
+@DynamicUpdate
 @Table(name="Groups")
 public class Groups {
 	
@@ -27,16 +31,17 @@ public class Groups {
 	private String response_create;
 	private String response_train;
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@JoinColumn(name="gid", nullable = false, insertable = false)
-	private List<Products> products;
+	private Set<Products> products;
 	
-	public List<Products> getProducts() {
+	public Set<Products> getProducts() {
 		return products;
 	}
 	public void setProducts(List<Products> products) {
-		this.products = products;
+		this.products = (Set<Products>) products;
 	}
+
 	public int getGid() {
 		return gid;
 	}

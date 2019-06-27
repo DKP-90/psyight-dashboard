@@ -1,6 +1,7 @@
 package com.dashboard.model;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -11,7 +12,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 @Entity
+@DynamicUpdate
 @Table(name="products")
 public class Products {
 
@@ -24,9 +28,9 @@ public class Products {
 	private int active;
 	private String definition;
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@JoinColumn(name="pid", nullable = false, insertable = false)
-	private List<ProductImage> images;
+	private Set<ProductImage> images;
 	
 	public int getPid() {
 		return pid;
@@ -43,11 +47,11 @@ public class Products {
 	public int getUserid() {
 		return userid;
 	}
-	public List<ProductImage> getImages() {
-		return images;
+	public Set<ProductImage> getImages() {
+		return  images;
 	}
 	public void setImages(List<ProductImage> images) {
-		this.images = images;
+		this.images = (Set<ProductImage>) images;
 	}
 	public void setUserid(int userid) {
 		this.userid = userid;

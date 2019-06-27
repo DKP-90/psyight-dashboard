@@ -3,9 +3,11 @@ package com.dashboard.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,8 +17,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Fetch;
 
 @Entity
+@DynamicUpdate
 @Table(name="user")
 public class User 
 {
@@ -32,13 +37,30 @@ private int active;
 @CreationTimestamp
 private LocalDateTime timestamp;
 
+@Override
+public String toString() {
+	return "User [userid=" + userid + ", name=" + name + ", password=" + password + ", email=" + email
+			+ ", organisation=" + organisation + ", active=" + active + ", timestamp=" + timestamp +  "]";
+}
 @OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 @JoinColumn(name="userid")
-private List<Groups> groups;
+private Set<Groups> groups;
 
+public Set<Groups> getGroups() {
+	return groups;
+}
+public void setGroups(List<Groups> groups) {
+	this.groups = (Set<Groups>) groups;
+}
+public Set<Products> getProducts() {
+	return products;
+}
+public void setProducts(List<Products> products) {
+	this.products = (Set<Products>) products;
+}
 @OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 @JoinColumn(name="userid")
-private List<Products> products;
+private Set<Products> products;
 
 
 public int getUserid() {
