@@ -1,10 +1,12 @@
 
 package com.dashboard.response.readuser;
 
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 
 @Component
 public class ReadUser {

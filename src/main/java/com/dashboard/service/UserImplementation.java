@@ -10,6 +10,7 @@ import com.dashboard.response.defaultresponse.DefaultResponse;
 import com.dashboard.response.readuser.ReadUser;
 import com.dashboard.response.readuser.ReadUserPayload;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -213,7 +214,7 @@ public class UserImplementation implements UserService {
 				readuserpayload.setUserid(item.getUserid());
 				readuserpayload.setActive(item.getActive());
 			}
-			readuser.setPayload(readuserpayload);
+			readuser.setPayload(null);
 			
 //			User u= session.get(User.class, 1);
 //			System.out.println(u);
@@ -259,7 +260,7 @@ public class UserImplementation implements UserService {
 		List<?> list;
 		try {			
 
-			Query<?> query = session.createQuery("SELECT U FROM User U  WHERE U.email='" + email +"' AND U.password='"+ password +"'");			
+			Query<?> query = session.createQuery("SELECT U FROM User U  WHERE U.email='" + email +"' AND U.password='"+ MD5(password) +"'");			
 			List<User> user =  (List<User>) query.getResultList();
 			
 			if (!user.isEmpty())
@@ -280,12 +281,26 @@ public class UserImplementation implements UserService {
 				}
 			else
 				{
-				readuser.setErrormsg("");
+				readuser.setErrormsg("Password-wrong");
 				readuser.setPagination(false);
 				readuser.setStatus(false);
-				response = new Gson().toJson(readuser);
-				}
+				
+//				readuserpayload.setName(null);
+//				readuserpayload.setEmail(null);
+//				readuserpayload.setOrganisation(null);
+//				readuserpayload.setUserid(0);
+//				readuserpayload.setActive(0);
 			
+				readuser.setPayload(null);
+				GsonBuilder gsonBuilder = new GsonBuilder();  
+				gsonBuilder.serializeNulls();  
+				Gson gson = gsonBuilder.create();
+
+				response = gson.toJson(readuser);
+
+				//
+				}
+
 //			Criteria cr = session.createCriteria(User.class).setProjection(Projections.projectionList()
 //				      .add(Projections.property("userid"), "userid")
 //				      .add(Projections.property("name"), "name"))
