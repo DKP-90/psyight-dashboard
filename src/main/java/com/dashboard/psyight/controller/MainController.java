@@ -54,10 +54,9 @@ public class MainController {
 	}
 
 	/// UPDATE USER
-	@RequestMapping(value = "/user/add/", method = RequestMethod.PUT, produces = "application/json")
+	@RequestMapping(value = "/user/update/", method = RequestMethod.PUT, produces = "application/json")
 	public String updateUser(HttpServletRequest request) {
-		return uobj.update(request.getParameter("userid"), request.getParameter("name"),
-				request.getParameter("password"), request.getParameter("email"), request.getParameter("organisation"));
+		return uobj.update(request.getParameter("userid"), request.getParameter("name"), request.getParameter("email"), request.getParameter("organisation"));
 	}
 
 	/// DELETE USER WITH ID

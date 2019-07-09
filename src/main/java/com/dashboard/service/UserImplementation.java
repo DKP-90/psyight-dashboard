@@ -44,6 +44,8 @@ public class UserImplementation implements UserService {
 	ReadUserPayload readuserpayload;
 	@Autowired
 	DefaultResponse defaultresponse;
+	@Autowired
+	CommonService comservice;
 	
 	@Override
 	public String add(String name, String password, String email, String organisation) {
@@ -84,7 +86,7 @@ public class UserImplementation implements UserService {
 	}
 
 	@Override
-	public String update(String userid, String name, String password, String email, String organisation) {
+	public String update(String userid, String name, String email, String organisation) {
 
 		String response="";
 		SessionFactory sf = HibernateUtil.getSessionFactory();
@@ -94,8 +96,7 @@ public class UserImplementation implements UserService {
 			Object o = session.get(User.class, userid);
 			User uobj = (User) o;
 			uobj.setOrganisation(organisation);
-			uobj.setName(name);
-			uobj.setPassword(MD5(password));
+			uobj.setName(name);			
 
 			tx.commit();
 			session.close();
@@ -284,21 +285,17 @@ public class UserImplementation implements UserService {
 				readuser.setErrormsg("Password-wrong");
 				readuser.setPagination(false);
 				readuser.setStatus(false);
-				
-//				readuserpayload.setName(null);
-//				readuserpayload.setEmail(null);
-//				readuserpayload.setOrganisation(null);
-//				readuserpayload.setUserid(0);
-//				readuserpayload.setActive(0);
 			
 				readuser.setPayload(null);
+				
+//				response = new Gson().toJson(readuser);
+
+				
 				GsonBuilder gsonBuilder = new GsonBuilder();  
 				gsonBuilder.serializeNulls();  
 				Gson gson = gsonBuilder.create();
-
 				response = gson.toJson(readuser);
 
-				//
 				}
 
 //			Criteria cr = session.createCriteria(User.class).setProjection(Projections.projectionList()
@@ -360,6 +357,104 @@ public class UserImplementation implements UserService {
 		} catch (java.security.NoSuchAlgorithmException e) {
 		}
 		return null;
+	}
+
+
+	@Override
+	public String forgotPassword(String email) {
+		
+		SessionFactory sf = HibernateUtil.getSessionFactory();
+		Session session = sf.openSession();
+		Transaction tx = session.beginTransaction();
+		String response="";
+		List<?> list;
+		try {
+			Query<?> query = session.createQuery("SELECT U FROM User U  WHERE U.email=" + email);			
+			List<User> user =  (List<User>) query.getResultList();
+			
+		
+			
+			for(User item:user )
+			{
+				Object o = session.get(User.class, item.getUserid());
+				User uobj = (User) o;				
+					uobj.setPassword("sfasf64675");
+					defaultresponse.setErrormsg("");
+					defaultresponse.setStatus(true);
+					
+					 Mail mail = new Mail();
+				        mail.setFrom("no-reply@psyight.com");
+				        mail.setTo(email);
+				        mail.setSubject("Password Reset");
+				        mail.setContent("Your password has been reset to sfasf64675");	        
+				        comservice.sendSimpleMessage(mail);
+				
+			}
+			
+			tx.commit();
+			session.close();
+			
+		} catch (Exception ex) {
+			logger.error(ex.toString());	
+			defaultresponse.setErrormsg(ex.toString());
+			defaultresponse.setStatus(false);
+			response = new Gson().toJson(defaultresponse);
+			return (response);
+		} finally {
+			try {
+				if (session != null)
+					session.close();
+				tx.commit();
+			} catch (Exception ex) {
+			}
+		}
+		
+		return (response);   
+	}
+
+	@Override
+	public String changePassword(String userid, String newPassword, String oldPassword) {
+		String response="";
+		defaultresponse.setErrormsg("");
+		defaultresponse.setStatus(false);
+		SessionFactory sf = HibernateUtil.getSessionFactory();
+		Session session = sf.openSession();
+		Transaction tx = session.beginTransaction();
+		try {
+			Object o = session.get(User.class, userid);
+			User uobj = (User) o;
+			if(oldPassword==uobj.getPassword())
+				{
+				uobj.setPassword(newPassword);
+				defaultresponse.setErrormsg("");
+				defaultresponse.setStatus(true);
+				}
+			else
+			{
+				uobj.setPassword(newPassword);
+				defaultresponse.setErrormsg("password does not match");
+				defaultresponse.setStatus(false);
+				}
+
+			tx.commit();
+			session.close();
+		} catch (Exception ex) {
+			logger.error(ex.toString());	
+			defaultresponse.setErrormsg(ex.toString());
+			defaultresponse.setStatus(false);
+			response = new Gson().toJson(defaultresponse);
+			return (response);
+		} finally {
+			try {
+				if (session != null)
+					session.close();
+				tx.commit();
+			} catch (Exception ex) {
+			}
+		}
+		
+		response = new Gson().toJson(defaultresponse);
+		return (response);
 	}
 
 }

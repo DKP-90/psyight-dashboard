@@ -32,6 +32,10 @@ public class Products {
 	@JoinColumn(name="pid", nullable = false, insertable = false)
 	private Set<ProductImage> images;
 	
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@JoinColumn(name="pid", nullable = false, insertable = false)
+	private Set<CampaignProducts> CampaignProducts;
+	
 	public int getPid() {
 		return pid;
 	}

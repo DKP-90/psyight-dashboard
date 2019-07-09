@@ -120,7 +120,7 @@ Payload payload;
 		Transaction tx = session.beginTransaction();
 		try {
 
-			Object g = session.get(Groups.class, 1);
+			Object g = session.get(Groups.class, gid);
 			Groups gobj = (Groups) g;
 			gobj.setActive(0);
 
