@@ -1,6 +1,7 @@
 package com.dashboard.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,7 +44,7 @@ Product product;
 @Autowired
 Payload payload;
 	@Override
-	public String add(String groupname, String definition) {
+	public String add(String groupname, String definition,String userid) {
 		String response="";
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
@@ -53,6 +54,7 @@ Payload payload;
 
 			gobj.setGroup_name(groupname);
 			gobj.setDefinition(definition);
+			gobj.setUserid(Integer.parseInt(userid));
 			session.save(gobj);
 			tx.commit();
 			session.close();
@@ -77,7 +79,7 @@ Payload payload;
 	}
 	
 	@Override
-	public String update(int gid,String groupname, List products,String response_create,String response_train) {
+	public String update(int gid,String groupname, Set products,String response_create,String response_train) {
 		String response="";
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
@@ -159,10 +161,11 @@ Payload payload;
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
-		List<?> list;
+		
 		try {
-			Query<?> query = session.createQuery("SELECT G FROM Groups G JOIN FETCH G.products P JOIN FETCH P.images WHERE G.userid=" + userid +" AND G.gid=" + gid);
-			
+			//Query<?> query = session.createQuery("SELECT G FROM Groups G JOIN FETCH G.products P JOIN FETCH P.images WHERE G.userid=" + userid +" AND G.gid=" + gid);
+			Query<?> query = session.createQuery("SELECT G FROM Groups G  WHERE G.userid=" + userid +" AND G.gid=" + gid);
+
 			List<Groups> group=  (List<Groups>) query.list();
 			
 			readusergroup.setErrormsg("");

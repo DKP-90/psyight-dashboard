@@ -277,20 +277,14 @@ public class UserImplementation implements UserService {
 					readuserpayload.setUserid(item.getUserid());
 					readuserpayload.setActive(item.getActive());
 				}
-				readuser.setPayload(readuserpayload);
-				response = new Gson().toJson(readuser);
+				readuser.setPayload(readuserpayload);				
 				}
 			else
 				{
 				readuser.setErrormsg("Password-wrong");
 				readuser.setPagination(false);
-				readuser.setStatus(false);
-			
-				readuser.setPayload(null);
-				
-//				response = new Gson().toJson(readuser);
-
-				
+				readuser.setStatus(false);			
+				readuser.setPayload(null);						
 				GsonBuilder gsonBuilder = new GsonBuilder();  
 				gsonBuilder.serializeNulls();  
 				Gson gson = gsonBuilder.create();
@@ -323,7 +317,7 @@ public class UserImplementation implements UserService {
 //				Gson gson = new Gson();
 //				response = gson.toJson(map);
 //			}
-			
+			response = new Gson().toJson(readuser);
 			tx.commit();
 			session.close();
 		} catch (Exception ex) {

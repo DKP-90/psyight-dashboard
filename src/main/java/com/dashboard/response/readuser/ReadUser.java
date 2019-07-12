@@ -20,7 +20,7 @@ public class ReadUser {
     @SerializedName("pagination")
     @Expose
     private Boolean pagination;
-    @SerializedName("pagination")
+    @SerializedName("payload")
     @Expose
     private ReadUserPayload payload;
 

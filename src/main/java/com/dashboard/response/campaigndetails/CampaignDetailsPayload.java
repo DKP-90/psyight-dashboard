@@ -1,9 +1,10 @@
 package com.dashboard.response.campaigndetails;
 
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
+import com.dashboard.model.CampaignProducts;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -36,7 +37,7 @@ private String json;
 private Integer active;
 @SerializedName("CampaignProducts")
 @Expose
-private List<CampaignProduct> campaignProducts = null;
+private Set<CampaignProducts> campaignProducts = null;
 
 public Integer getCid() {
 return cid;
@@ -102,12 +103,12 @@ public void setActive(Integer active) {
 this.active = active;
 }
 
-public List<CampaignProduct> getCampaignProducts() {
+public Set<CampaignProducts> getCampaignProducts() {
 return campaignProducts;
 }
 
-public void setCampaignProducts(List<CampaignProduct> campaignProducts) {
-this.campaignProducts = campaignProducts;
+public void setCampaignProducts(Set<CampaignProducts> set) {
+this.campaignProducts = set;
 }
 
 }

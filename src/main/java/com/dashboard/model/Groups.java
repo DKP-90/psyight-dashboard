@@ -38,7 +38,7 @@ public class Groups {
 	public Set<Products> getProducts() {
 		return products;
 	}
-	public void setProducts(List<Products> products) {
+	public void setProducts(Set<Products> products) {
 		this.products = (Set<Products>) products;
 	}
 
