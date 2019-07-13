@@ -33,7 +33,7 @@ public class UploadXlsxController {
     private final Logger logger = LoggerFactory.getLogger(UploadXlsxController.class);
 
     //Save the uploaded file to this folder
-    private static String UPLOADED_FOLDER = "C:\\Users\\Backend\\Desktop\\psyight\\";
+    private static String UPLOADED_FOLDER = "/var/www/html/psyight_images/";
 
     //Single file upload
     @PostMapping("/xlsx/upload")

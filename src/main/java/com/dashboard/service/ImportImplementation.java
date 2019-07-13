@@ -33,7 +33,7 @@ public class ImportImplementation implements ImportService {
 			
 		try
 		{
-	    File excelFile = new File(userid + ".xlsx");
+	    File excelFile = new File("/var/www/html/psyight_images/"+userid + ".xlsx");
 	    FileInputStream fis = new FileInputStream(excelFile);
 	    XSSFWorkbook workbook = new XSSFWorkbook(fis);
 	    XSSFSheet sheet = workbook.getSheetAt(0);

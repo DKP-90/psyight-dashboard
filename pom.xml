@@ -13,6 +13,9 @@
 	<artifactId>psyight</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>psyight</name>
+
+
+
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
@@ -102,6 +105,13 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+<archive>
+<manifest>
+<mainClass>com.dashboard.psyight.PsyightApplication</mainClass>
+</manifest>
+</archive>
+</configuration>
 			</plugin>
 		</plugins>
 		<finalName>psyight</finalName>

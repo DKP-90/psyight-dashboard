@@ -215,7 +215,7 @@ public class UserImplementation implements UserService {
 				readuserpayload.setUserid(item.getUserid());
 				readuserpayload.setActive(item.getActive());
 			}
-			readuser.setPayload(null);
+			readuser.setPayload(readuserpayload);
 			
 //			User u= session.get(User.class, 1);
 //			System.out.println(u);
