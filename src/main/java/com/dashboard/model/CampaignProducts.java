@@ -26,13 +26,13 @@ public class CampaignProducts implements Serializable  {
 	@Id
 	private int pid;
 	private int active;
-	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY,targetEntity=Products.class)
-	@JoinColumn(name="pid", nullable = false, insertable = false,updatable=false)
-	private Set<Products> Products;
+//	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY,targetEntity=Products.class)
+//	@JoinColumn(name="pid", nullable = false, insertable = false,updatable=false)
+//	private Set<Products> Products;
 	
-	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY,targetEntity=Campaign.class)
-	@JoinColumn(name="cid", nullable = false, insertable = false,updatable=false)
-	private Set<Campaign> Campaign;
+//	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY,targetEntity=Campaign.class)
+//	@JoinColumn(name="cid", nullable = false, insertable = false,updatable=false)
+//	private Campaign Campaign;
 	
 	public int getActive() {
 		return active;
@@ -40,18 +40,18 @@ public class CampaignProducts implements Serializable  {
 	public void setActive(int active) {
 		this.active = active;
 	}
-	public Set<Products> getProducts() {
-		return Products;
-	}
-	public void setProducts(Set<Products> products) {
-		Products = products;
-	}
-	public Set<Campaign> getCampaign() {
-		return Campaign;
-	}
-	public void setCampaign(Set<Campaign> campaign) {
-		Campaign = campaign;
-	}
+//	public Set<Products> getProducts() {
+//		return Products;
+//	}
+//	public void setProducts(Set<Products> products) {
+//		Products = products;
+//	}
+//	public Campaign getCampaign() {
+//		return Campaign;
+//	}
+//	public void setCampaign(Campaign campaign) {
+//		Campaign = campaign;
+//	}
 	public int getCid() {
 		return cid;
 	}

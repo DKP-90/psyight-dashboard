@@ -40,6 +40,8 @@ public class Campaign {
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@JoinColumn(name="cid", nullable = false, insertable = false)
 	private Set<CampaignProducts> CampaignProducts;
+	
+	
 
 	public int getCid() {
 		return cid;

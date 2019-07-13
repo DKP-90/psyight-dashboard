@@ -118,7 +118,7 @@ public class MainController {
 	/// ADD CAMPAIGN
 	@RequestMapping(value = "/Campaign/add/", method = RequestMethod.POST, produces = "application/json")
 	public String addCampaign(HttpServletRequest request) {
-		return cobj.addCampaign(request.getParameter("campaign_name") ,request.getParameter("campaign_desc") ,request.getParameter("campaign_start_date"),request.getParameter("campaign_end_date") ,request.getParameter("json") );		
+		return cobj.addCampaign(request.getParameter("campaign_name") ,request.getParameter("campaign_desc") ,request.getParameter("campaign_start_date"),request.getParameter("campaign_end_date") ,request.getParameter("json"),Integer.parseInt(request.getParameter("userid")));		
 	}
 
 
@@ -165,25 +165,25 @@ public class MainController {
 	
 	
 	
-	@Autowired
-	ClarifaiService cs;
-	
-	/// READ GROUP WITH ID
-	@RequestMapping(value = "/user/trainGroupFromId/userid/{userid}/groupid/{gid}/", method = RequestMethod.GET, produces = "application/json")
-	public String trainGroupFromId(@PathVariable("userid") String userid,@PathVariable("gid") int gid) {
-		return cs.train(gid, userid);
-	}
-	
-	//READ IMAGES
-	@RequestMapping(value = "/userid/{userid}/image/{img}", method = RequestMethod.GET,produces = MediaType.IMAGE_JPEG_VALUE)
-	public @ResponseBody byte[] getImage(@PathVariable("img") String img,@PathVariable("userid") String userid) throws IOException {
-		
-		 BufferedImage bImage = ImageIO.read(new File("img/"+userid+"/"+img));
-	      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-	      ImageIO.write(bImage, "jpg", bos );
-	   
-	    return bos.toByteArray();
-	}
+//	@Autowired
+//	ClarifaiService cs;
+//	
+//	/// READ GROUP WITH ID
+//	@RequestMapping(value = "/user/trainGroupFromId/userid/{userid}/groupid/{gid}/", method = RequestMethod.GET, produces = "application/json")
+//	public String trainGroupFromId(@PathVariable("userid") String userid,@PathVariable("gid") int gid) {
+//		return cs.train(gid, userid);
+//	}
+//	
+//	//READ IMAGES
+//	@RequestMapping(value = "/userid/{userid}/image/{img}", method = RequestMethod.GET,produces = MediaType.IMAGE_JPEG_VALUE)
+//	public @ResponseBody byte[] getImage(@PathVariable("img") String img,@PathVariable("userid") String userid) throws IOException {
+//		
+//		 BufferedImage bImage = ImageIO.read(new File("img/"+userid+"/"+img));
+//	      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//	      ImageIO.write(bImage, "jpg", bos );
+//	   
+//	    return bos.toByteArray();
+//	}
 	
 
 	

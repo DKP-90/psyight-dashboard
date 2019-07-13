@@ -1,22 +1,15 @@
-package com.dashboard.response.campaigndetails;
-
-import java.util.Set;
+package com.dashboard.response.productdetails;
 
 import org.springframework.stereotype.Component;
 
-import com.dashboard.model.CampaignProducts;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
 @Component
-public class CampaignDetailsPayload {
+public class Campaignlist {
 
 @SerializedName("cid")
 @Expose
 private Integer cid;
-@SerializedName("userid")
-@Expose
-private Integer userid;
 @SerializedName("campaign_name")
 @Expose
 private String campaignName;
@@ -32,12 +25,6 @@ private String campaignEndDate;
 @SerializedName("json")
 @Expose
 private String json;
-@SerializedName("active")
-@Expose
-private Integer active;
-@SerializedName("CampaignProducts")
-@Expose
-private Set<CampaignDetailProduct> CampaignDetailProduct = null;
 
 public Integer getCid() {
 return cid;
@@ -45,14 +32,6 @@ return cid;
 
 public void setCid(Integer cid) {
 this.cid = cid;
-}
-
-public Integer getUserid() {
-return userid;
-}
-
-public void setUserid(Integer userid) {
-this.userid = userid;
 }
 
 public String getCampaignName() {
@@ -93,22 +72,6 @@ return json;
 
 public void setJson(String json) {
 this.json = json;
-}
-
-public Integer getActive() {
-return active;
-}
-
-public void setActive(Integer active) {
-this.active = active;
-}
-
-public Set<CampaignDetailProduct> getCampaignProducts() {
-return CampaignDetailProduct;
-}
-
-public void setCampaignProducts(Set<CampaignDetailProduct> set) {
-this.CampaignDetailProduct = set;
 }
 
 }

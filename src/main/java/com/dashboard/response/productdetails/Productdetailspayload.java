@@ -1,5 +1,8 @@
 package com.dashboard.response.productdetails;
 
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.stereotype.Component;
 
 import com.google.gson.annotations.Expose;
@@ -26,6 +29,9 @@ private Integer active;
 @SerializedName("definition")
 @Expose
 private String definition;
+@SerializedName("Campaignlist")
+@Expose
+private Set<Campaignlist> campaignlist = null;
 
 public Integer getPid() {
 return pid;
@@ -73,6 +79,14 @@ return definition;
 
 public void setDefinition(String definition) {
 this.definition = definition;
+}
+
+public Set<Campaignlist> getCampaignlist() {
+return campaignlist;
+}
+
+public void setCampaignlist(Set<Campaignlist> campaignlist) {
+this.campaignlist = campaignlist;
 }
 
 }

@@ -36,6 +36,16 @@ public class Products {
 	@JoinColumn(name="pid", nullable = false, insertable = false)
 	private Set<CampaignProducts> CampaignProducts;
 	
+//	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+//	@JoinColumn(name="cid", nullable = false, insertable = false)
+//	private Set<Campaign> Campaign;
+	
+//	public Set<Campaign> getCampaign() {
+//		return Campaign;
+//	}
+//	public void setCampaign(Set<Campaign> campaign) {
+//		Campaign = campaign;
+//	}
 	public int getPid() {
 		return pid;
 	}
@@ -62,6 +72,12 @@ public class Products {
 	}
 	public String getProduct_name() {
 		return product_name;
+	}
+	public Set<CampaignProducts> getCampaignProducts() {
+		return CampaignProducts;
+	}
+	public void setCampaignProducts(Set<CampaignProducts> campaignProducts) {
+		CampaignProducts = campaignProducts;
 	}
 	public void setProduct_name(String product_name) {
 		this.product_name = product_name;

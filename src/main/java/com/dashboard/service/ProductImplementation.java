@@ -1,6 +1,8 @@
 package com.dashboard.service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,9 +13,14 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.dashboard.model.Campaign;
+import com.dashboard.model.CampaignProducts;
 import com.dashboard.model.Groups;
 import com.dashboard.model.Products;
+import com.dashboard.model.User;
 import com.dashboard.repository.HibernateUtil;
+import com.dashboard.response.campaigndetails.CampaignDetailProduct;
+import com.dashboard.response.productdetails.Campaignlist;
 import com.dashboard.response.productdetails.ProductDetails;
 import com.dashboard.response.productdetails.Productdetailspayload;
 import com.google.gson.Gson;
@@ -25,6 +32,8 @@ public class ProductImplementation implements ProductService {
 	ProductDetails ProductDetails;
 	@Autowired
 	Productdetailspayload Productdetailspayload;
+	@Autowired
+	Campaignlist Campaignlist;
 	private static Logger logger = LogManager.getLogger(GroupsImplementation.class);
 
 	
@@ -40,7 +49,10 @@ public class ProductImplementation implements ProductService {
 			Query<?> query = session.createQuery("SELECT P FROM Products P  WHERE P.userid="+ userid +" AND P.pid=" + pid);
 
 			List<Products> products=  (List<Products>) query.list();
-			
+			Set<CampaignProducts> cps=null;
+			Campaign cobj;
+			Object c;
+			Set<Campaignlist> Campaignlistset=new HashSet<Campaignlist>(); 
 			ProductDetails.setErrormsg("");
 			ProductDetails.setPagination(false);
 			ProductDetails.setStatus(true);
@@ -52,7 +64,23 @@ public class ProductImplementation implements ProductService {
 				Productdetailspayload.setProductName(item.getProduct_name());
 				Productdetailspayload.setActive(item.getActive());
 				Productdetailspayload.setDefinition(item.getDefinition());
+	
+
+				cps=item.getCampaignProducts();
+				
+				for(CampaignProducts cpsitem:cps )
+				{
+					 c=session.get(Campaign.class, cpsitem.getCid());
+					 cobj = (Campaign) c;
+					 Campaignlist.setCid(cobj.getCid());
+					 Campaignlist.setCampaignName(cobj.getCampaign_name());
+					 Campaignlist.setCampaignDesc(cobj.getCampaign_desc());
+				
+				Campaignlistset.add(Campaignlist);							
+				}
+				
 			}
+			Productdetailspayload.setCampaignlist(Campaignlistset);
 			ProductDetails.setProductdetailspayload(Productdetailspayload);
 			response = new Gson().toJson(ProductDetails);
 
