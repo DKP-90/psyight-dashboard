@@ -46,12 +46,11 @@ public class UploadImgController {
     private final Logger logger = LoggerFactory.getLogger(UploadImgController.class);
 
     //Save the uploaded file to this folder
-    private static String UPLOADED_FOLDER = "C:\\Users\\Backend\\Desktop\\psyight\\img\\";
-   // private static String UPLOADED_FOLDER = "/var/www/html/psyight_images/";
+    private static String UPLOADED_FOLDER = "img\\";
+
     //Single file upload
     @PostMapping("/img/upload")
-    // If not @RestController, uncomment this
-    //@ResponseBody
+
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile uploadfile, @RequestParam("userid") String userid , @RequestParam("pid") int pid) {
 
         logger.debug("Single file upload!");
@@ -65,7 +64,7 @@ public class UploadImgController {
         	 File dir = new File(UPLOADED_FOLDER + userid + "/");
         	    if (!dir.exists()) dir.mkdirs();        	    
             saveUploadedFiles(Arrays.asList(uploadfile),UPLOADED_FOLDER + userid + "/" + generatedString + ".jpg");    
-            pis.addimage("http://198.58.126.243/psyight_images/"+userid+"/"+generatedString + ".jpg", pid);
+            pis.addimage("http://psyightdash.boxspace.in/viewimage/"+userid+"/"+generatedString , pid);
 
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
