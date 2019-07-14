@@ -46,7 +46,7 @@ public class UploadImgController {
     private final Logger logger = LoggerFactory.getLogger(UploadImgController.class);
 
     //Save the uploaded file to this folder
-    private static String UPLOADED_FOLDER = "img\\";
+    private static String UPLOADED_FOLDER = "img/";
 
     //Single file upload
     @PostMapping("/img/upload")
@@ -64,7 +64,7 @@ public class UploadImgController {
         	 File dir = new File(UPLOADED_FOLDER + userid + "/");
         	    if (!dir.exists()) dir.mkdirs();        	    
             saveUploadedFiles(Arrays.asList(uploadfile),UPLOADED_FOLDER + userid + "/" + generatedString + ".jpg");    
-            pis.addimage("http://psyightdash.boxspace.in/viewimage/"+userid+"/"+generatedString , pid);
+            pis.addimage("http://psyightdash.boxspace.in:8081/viewimage/"+userid+"/"+generatedString , pid);
 
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -96,7 +96,7 @@ public class UploadImgController {
     @RequestMapping(value = "/viewimage/{userid}/{image}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
     public byte[] readimage(@PathVariable("userid") String userid,@PathVariable("image") String image ) throws IOException {    	
-    	byte[] b =Files.readAllBytes(Paths.get(UPLOADED_FOLDER+userid+"\\"+image+".jpg"));
+    	byte[] b =Files.readAllBytes(Paths.get(UPLOADED_FOLDER+userid+"/"+image+".jpg"));
         return b;
     }
     
