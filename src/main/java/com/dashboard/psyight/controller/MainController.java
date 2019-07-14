@@ -31,7 +31,7 @@ import com.dashboard.service.UserService;
 
 import com.google.gson.Gson;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
 @RestController
 public class MainController {
 
