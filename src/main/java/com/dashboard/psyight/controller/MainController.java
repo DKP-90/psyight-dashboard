@@ -122,6 +122,11 @@ public class MainController {
 		return cobj.addCampaign(request.getParameter("campaign_name") ,request.getParameter("campaign_desc") ,request.getParameter("campaign_start_date"),request.getParameter("campaign_end_date") ,request.getParameter("json"),Integer.parseInt(request.getParameter("userid")));		
 	}
 
+	/// READ ALL CAMPAIGN
+		@RequestMapping(value = "/user/ReadCampaign/userid/{userid}/{start}/{limit}", method = RequestMethod.GET, produces = "application/json")
+		public String readCampaign(@PathVariable("userid") String userid,@PathVariable("start") int start,@PathVariable("limit") int limit) {
+			return cobj.read(userid,start,limit);
+		}
 
 	/// READ CAMPAIGN WITH ID
 	@RequestMapping(value = "/user/ReadCampaignFromId/userid/{userid}/campaignid/{cid}/", method = RequestMethod.GET, produces = "application/json")

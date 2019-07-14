@@ -1,6 +1,7 @@
 package com.dashboard.service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -65,8 +66,8 @@ public class CampaignImplementation implements CampaignService {
 			Query<?> query = session.createQuery("SELECT C FROM Campaign C  WHERE C.userid=" + userid );
 			query.setFirstResult(start);
 			query.setMaxResults(limit);
-			List<Campaign> Campaign=  (List<Campaign>) query.list();
-			List<CampaignListList> Clist= null;
+			List<CampaignListList> Clist=new  ArrayList<CampaignListList>();
+			List<Campaign> Campaign=  (List<Campaign>) query.list();			
 			CampaignList.setErrormsg("");
 			if(Campaign.size()<limit)
 				CampaignList.setPagination(false);
@@ -75,7 +76,8 @@ public class CampaignImplementation implements CampaignService {
 			CampaignList.setStatus(true);
 			
 			for(Campaign item:Campaign )
-			{							
+			{		
+				
 				CampaignListList.setCid(item.getCid());
 				CampaignListList.setCampaignName(item.getCampaign_name());
 				CampaignListList.setCampaignDesc(item.getCampaign_desc());
@@ -86,7 +88,7 @@ public class CampaignImplementation implements CampaignService {
 			}
 			CampaignListPayload.setCampaignListList(Clist);
 			CampaignList.setCampaignListPayload(CampaignListPayload);
-			response = new Gson().toJson(CampaignDetails);
+			response = new Gson().toJson(CampaignList);
 
 			tx.commit();
 			session.close();
