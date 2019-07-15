@@ -50,7 +50,7 @@ public class UserImplementation implements UserService {
 	@Override
 	public String add(String name, String password, String email, String organisation) {
 
-		String response="";
+		String response="";Integer userid=0;
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
@@ -62,6 +62,8 @@ public class UserImplementation implements UserService {
 			uobj.setPassword(MD5(password));
 			uobj.setActive(1);
 			session.save(uobj);
+			userid=uobj.getUserid();
+			defaultresponse.setId(userid.toString());
 			tx.commit();
 			session.close();
 

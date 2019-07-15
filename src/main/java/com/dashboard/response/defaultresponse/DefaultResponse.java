@@ -14,13 +14,23 @@ public class DefaultResponse {
 	    @SerializedName("errormsg")
 	    @Expose
 	    private String errormsg;
-
+	    @SerializedName("id")
+	    @Expose
+	    private String id;
 	    
 	    public Boolean getStatus() {
 	        return status;
 	    }
 
-	    public void setStatus(Boolean status) {
+	    public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public void setStatus(Boolean status) {
 	        this.status = status;
 	    }
 

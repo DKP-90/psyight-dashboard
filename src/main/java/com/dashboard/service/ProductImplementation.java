@@ -75,6 +75,7 @@ public class ProductImplementation implements ProductService {
 					 Campaignlist.setCid(cobj.getCid());
 					 Campaignlist.setCampaignName(cobj.getCampaign_name());
 					 Campaignlist.setCampaignDesc(cobj.getCampaign_desc());
+					 Campaignlist.setJson(cobj.getJson());
 				
 				Campaignlistset.add(Campaignlist);							
 				}

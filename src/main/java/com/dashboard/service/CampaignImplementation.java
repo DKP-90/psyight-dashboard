@@ -169,7 +169,7 @@ public class CampaignImplementation implements CampaignService {
 	@Override
 	public String addCampaign( String campaign_name, String campaign_desc, String campaign_start_date,String campaign_end_date, String json, int userid) {
 
-		String response="";
+		String response="";Integer cid=0;
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
@@ -184,6 +184,8 @@ public class CampaignImplementation implements CampaignService {
 			cobj.setActive(1);
 			cobj.setJson(json);
 			session.save(cobj);
+			cid=cobj.getCid();
+			defaultresponse.setId(cid.toString());
 			tx.commit();
 			session.close();
 		} catch (Exception ex) {

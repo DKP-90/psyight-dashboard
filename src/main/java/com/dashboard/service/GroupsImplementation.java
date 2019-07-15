@@ -45,7 +45,7 @@ Product product;
 Payload payload;
 	@Override
 	public String add(String groupname, String definition,String userid) {
-		String response="";
+		String response="";Integer gid=0;
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
@@ -56,6 +56,8 @@ Payload payload;
 			gobj.setDefinition(definition);
 			gobj.setUserid(Integer.parseInt(userid));
 			session.save(gobj);
+			gid=gobj.getGid();
+			defaultresponse.setId(gid.toString());
 			tx.commit();
 			session.close();
 		} catch (Exception ex) {

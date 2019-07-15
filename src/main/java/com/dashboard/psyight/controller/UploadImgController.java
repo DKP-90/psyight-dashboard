@@ -35,6 +35,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
 @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
 @RestController
 public class UploadImgController {
@@ -65,7 +66,7 @@ public class UploadImgController {
         	 File dir = new File(UPLOADED_FOLDER + userid + "/");
         	    if (!dir.exists()) dir.mkdirs();        	    
             saveUploadedFiles(Arrays.asList(uploadfile),UPLOADED_FOLDER + userid + "/" + generatedString + ".jpg");    
-            pis.addimage("http://psyightdash.boxspace.in:8081/viewimage/"+userid+"/"+generatedString , pid);
+            pis.addimage("http://psyightdash.boxspace.in:8081/viewimage/"+userid+"/"+generatedString + ".jpg" , pid);
 
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -97,7 +98,7 @@ public class UploadImgController {
     @RequestMapping(value = "/viewimage/{userid}/{image}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
     public byte[] readimage(@PathVariable("userid") String userid,@PathVariable("image") String image ) throws IOException {    	
-    	byte[] b =Files.readAllBytes(Paths.get(UPLOADED_FOLDER+userid+"/"+image+".jpg"));
+    	byte[] b =Files.readAllBytes(Paths.get(UPLOADED_FOLDER+userid+"/"+image));
         return b;
     }
     
