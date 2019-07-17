@@ -2,6 +2,7 @@ package com.dashboard.service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -18,87 +19,86 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-
-
-
-
 @Service
 public class ImportImplementation implements ImportService {
 
 	private static Logger logger = LogManager.getLogger(ImportImplementation.class);
-	 OkHttpClient client = new OkHttpClient();
-	 
+	OkHttpClient client = new OkHttpClient();
+
 	@Override
-	public String ImportXlsxs(String userid,String gid,String groupname)  {
-			
-		try
-		{
-	    File excelFile = new File("xls//"+userid + ".xlsx");
-	    FileInputStream fis = new FileInputStream(excelFile);
-	    XSSFWorkbook workbook = new XSSFWorkbook(fis);
-	    XSSFSheet sheet = workbook.getSheetAt(0);
-	    Iterator<Row> rowIt = sheet.iterator();	   
-	    String products=",'userid':" + userid + ",'active':1",definition="",pid,product_name="";	
-	    List<String> cmlist=new ArrayList<String>();
-	    while(rowIt.hasNext()) {
-	      Row row = rowIt.next();
-	      Iterator<Cell> cellIterator = row.cellIterator();
+	public String ImportXlsxs(String userid, String gid, String groupname) {
 
-	      while (cellIterator.hasNext()) {
-	    
-	    Cell cell = cellIterator.next();
-	    if(row.getRowNum()==0)
-	    {	        
-	    	cmlist.add(cell.toString());  
-	    }
-	    else
-	    {	    	
-	    	 if(cell.getColumnIndex()==0)
-	        	 pid=cell.toString();
-	        else if(cell.getColumnIndex()==1)
-	        	product_name=cell.toString();
-	        else if(cellIterator.hasNext())
-	        	definition= definition + "'" + cmlist.get(cell.getColumnIndex()).toString() + "':'" + cell.toString() + "',";
-	        else
-	        	definition= definition + "'" + cmlist.get(cell.getColumnIndex()).toString() + "':'" + cell.toString() + "'";
-	    }
+		try {
+			File excelFile = new File("xls//" + userid + ".xlsx");
+			FileInputStream fis = new FileInputStream(excelFile);
+			XSSFWorkbook workbook = new XSSFWorkbook(fis);
+			XSSFSheet sheet = workbook.getSheetAt(0);
+			Iterator<Row> rowIt = sheet.iterator();
+			String products = ",'userid':" + userid + ",'active':1", definition = "", product_name = "";
+			List<String> cmlist = new ArrayList<String>();
 
-	      }
-	      if(row.getRowNum()!=0)
-	      {
+			while (rowIt.hasNext()) {
 
-	      Request request = new Request.Builder()
-	        .url("http://localhost:8081/group/add/?groupname=" + groupname + "&gid=" + gid + "&products=%7Bdefinition=%22" + definition + "%22,product_name='"+ product_name +"','gid':" + gid + products + "%7D")
-	        .put(null)
-	        .addHeader("Accept", "*/*")
-	        .addHeader("Cache-Control", "no-cache")
-	        .addHeader("Host", "localhost:8081")
-	        .addHeader("accept-encoding", "gzip, deflate")
-	        .addHeader("content-length", "")
-	        .addHeader("Connection", "keep-alive")
-	        .addHeader("cache-control", "no-cache")
-	        .build();
+				Row row = rowIt.next();
+				Iterator<Cell> cellIterator = row.cellIterator();
 
-	      Response response = client.newCall(request).execute();
-	      }
-	      definition="";
-	      
-	      System.out.println();
-	    }
+				while (cellIterator.hasNext()) {
 
-	    workbook.close();
-	fis.close();
-		
-	}catch (Exception e) {
-		System.out.println(e.toString());
-	}
-		
+					Cell cell = cellIterator.next();
+					if (row.getRowNum() == 0) {
+						cmlist.add(cell.toString());
+					} else {
+
+						if (cell.getColumnIndex() == 0)
+							definition = definition + "'id':'" + URLEncoder.encode(cell.toString(), "UTF-8") + "',";
+						else if (cell.getColumnIndex() == 1)
+							product_name = cell.toString();
+						else if (cellIterator.hasNext())
+							definition = definition + "'"
+									+ URLEncoder.encode(cmlist.get(cell.getColumnIndex()).toString(), "UTF-8") + "':'"
+									+ URLEncoder.encode(cell.toString(), "UTF-8") + "',";
+						else
+							definition = definition + "'"
+									+ URLEncoder.encode(cmlist.get(cell.getColumnIndex()).toString(), "UTF-8") + "':'"
+									+ URLEncoder.encode(cell.toString(), "UTF-8") + "'";
+
+					}
+
+				}
+				if (row.getRowNum() != 0) {
+
+					Request request = new Request.Builder()
+							.url("http://localhost:8081/group/add/?groupname=" + URLEncoder.encode(groupname, "UTF-8")
+									+ "&gid=" + gid + "&products=%7Bdefinition=%22%7B" + definition
+									+ "%7D%22,product_name='" + URLEncoder.encode(product_name, "UTF-8") + "','gid':"
+									+ gid + products + "%7D")
+							.put(null).addHeader("Accept", "*/*").addHeader("Cache-Control", "no-cache")
+							.addHeader("Host", "localhost:8081").addHeader("accept-encoding", "gzip, deflate")
+							.addHeader("content-length", "").addHeader("Connection", "keep-alive")
+							.addHeader("cache-control", "no-cache").build();
+					try {
+						Response response = client.newCall(request).execute();
+					} catch (Exception e) {
+
+					}
+				}
+				definition = "";
+
+			}
+
+			workbook.close();
+			fis.close();
+
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+
 		return ("{Response:200,transaction:true,error-log:''}");
 	}
 
 	@Override
 	public String UploadXlsx(String userid) {
-		
+
 		// TODO Auto-generated method stub
 		return null;
 	}

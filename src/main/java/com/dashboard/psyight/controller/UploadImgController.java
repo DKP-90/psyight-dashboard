@@ -52,7 +52,6 @@ public class UploadImgController {
 
     //Single file upload
     @PostMapping("/img/upload")
-
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile uploadfile, @RequestParam("userid") String userid , @RequestParam("pid") int pid) {
 
         logger.debug("Single file upload!");
@@ -72,7 +71,9 @@ public class UploadImgController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity("Successfully uploaded - " + uploadfile.getOriginalFilename(), new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity("{\r\n" + 
+        		"  \"status\": true,\r\n" + 
+        		"  \"errormsg\": \"\"}", new HttpHeaders(), HttpStatus.OK);
 
     }
 

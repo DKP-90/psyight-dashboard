@@ -59,7 +59,9 @@ public class UploadXlsxController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity("Successfully uploaded - " + uploadfile.getOriginalFilename(), new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity("{\r\n" + 
+        		"  \"status\": true,\r\n" + 
+        		"  \"errormsg\": \"\"}", new HttpHeaders(), HttpStatus.OK);
 
     }
 

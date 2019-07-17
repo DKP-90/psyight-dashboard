@@ -61,7 +61,8 @@ public class MainController {
 	/// UPDATE USER
 	@RequestMapping(value = "/user/update/", method = RequestMethod.PUT, produces = "application/json")
 	public String updateUser(HttpServletRequest request) {
-		return uobj.update(request.getParameter("userid"), request.getParameter("name"), request.getParameter("email"), request.getParameter("organisation"));
+		return uobj.update(request.getParameter("userid"), request.getParameter("name"), request.getParameter("email"),
+				request.getParameter("organisation"));
 	}
 
 	/// DELETE USER WITH ID
@@ -69,27 +70,22 @@ public class MainController {
 	public String deleteUser(@PathVariable("userid") String userid) {
 		return uobj.delete(userid);
 	}
-	
-	
-	////////////////////// GROUP SERVICES	
-	
-	
+
+	////////////////////// GROUP SERVICES
+
 	@Autowired
 	GroupsService gobj;
-	
-
-	
 
 	/// ADD GROUP
 	@RequestMapping(value = "/group/add/", method = RequestMethod.POST, produces = "application/json")
 	public String addGroup(HttpServletRequest request) {
-		return gobj.add(request.getParameter("groupname"), request.getParameter("definition"), request.getParameter("userid"));		
+		return gobj.add(request.getParameter("groupname"), request.getParameter("definition"),
+				request.getParameter("userid"));
 	}
-
 
 	/// READ GROUP WITH ID
 	@RequestMapping(value = "/user/ReadGroupFromId/userid/{userid}/groupid/{gid}/", method = RequestMethod.GET, produces = "application/json")
-	public String readGroupFromId(@PathVariable("userid") String userid,@PathVariable("gid") int gid) {
+	public String readGroupFromId(@PathVariable("userid") String userid, @PathVariable("gid") int gid) {
 		return gobj.readFromId(userid, gid);
 	}
 
@@ -99,10 +95,11 @@ public class MainController {
 		Gson gson = new Gson();
 		String jsonInString = request.getParameter("products").toString();
 		Products prd = gson.fromJson(jsonInString, Products.class);
-		Set<Products> prl=new HashSet<Products>();
-		prl.add(prd);	
-		
-		return gobj.update(Integer.parseInt(request.getParameter("gid")), request.getParameter("groupname"),prl,request.getParameter("response_create"),request.getParameter("response_train"));
+		Set<Products> prl = new HashSet<Products>();
+		prl.add(prd);
+
+		return gobj.update(Integer.parseInt(request.getParameter("gid")), request.getParameter("groupname"), prl,
+				request.getParameter("response_create"), request.getParameter("response_train"));
 	}
 
 	/// DELETE GROUP WITH ID
@@ -110,34 +107,37 @@ public class MainController {
 	public String deleteGroup(@PathVariable("gid") int gid) {
 		return gobj.delete(gid);
 	}
-	
-	
+
 	@Autowired
 	CampaignService cobj;
-	
-	
+
 	/// ADD CAMPAIGN
 	@RequestMapping(value = "/Campaign/add/", method = RequestMethod.POST, produces = "application/json")
 	public String addCampaign(HttpServletRequest request) {
-		return cobj.addCampaign(request.getParameter("campaign_name") ,request.getParameter("campaign_desc") ,request.getParameter("campaign_start_date"),request.getParameter("campaign_end_date") ,request.getParameter("json"),Integer.parseInt(request.getParameter("userid")));		
+		return cobj.addCampaign(request.getParameter("campaign_name"), request.getParameter("campaign_desc"),
+				request.getParameter("campaign_start_date"), request.getParameter("campaign_end_date"),
+				request.getParameter("json"), Integer.parseInt(request.getParameter("userid")));
 	}
 
 	/// READ ALL CAMPAIGN
-		@RequestMapping(value = "/user/ReadCampaign/userid/{userid}/{start}/{limit}", method = RequestMethod.GET, produces = "application/json")
-		public String readCampaign(@PathVariable("userid") String userid,@PathVariable("start") int start,@PathVariable("limit") int limit) {
-			return cobj.read(userid,start,limit);
-		}
+	@RequestMapping(value = "/user/ReadCampaign/userid/{userid}/{start}/{limit}", method = RequestMethod.GET, produces = "application/json")
+	public String readCampaign(@PathVariable("userid") String userid, @PathVariable("start") int start,
+			@PathVariable("limit") int limit) {
+		return cobj.read(userid, start, limit);
+	}
 
 	/// READ CAMPAIGN WITH ID
 	@RequestMapping(value = "/user/ReadCampaignFromId/userid/{userid}/campaignid/{cid}/", method = RequestMethod.GET, produces = "application/json")
-	public String readCampaignFromId(@PathVariable("userid") String userid,@PathVariable("cid") int cid) {
+	public String readCampaignFromId(@PathVariable("userid") String userid, @PathVariable("cid") int cid) {
 		return cobj.readFromId(userid, cid);
 	}
 
 	/// UPDATE CAMPAIGN
 	@RequestMapping(value = "/Campaign/add/", method = RequestMethod.PUT, produces = "application/json")
-	public String updateCampaign(HttpServletRequest request) {			
-		return cobj.updateCampaign(Integer.parseInt(request.getParameter("cid")), request.getParameter("campaign_name") ,request.getParameter("campaign_desc") ,request.getParameter("campaign_start_date"),request.getParameter("campaign_end_date") ,request.getParameter("json") );
+	public String updateCampaign(HttpServletRequest request) {
+		return cobj.updateCampaign(Integer.parseInt(request.getParameter("cid")), request.getParameter("campaign_name"),
+				request.getParameter("campaign_desc"), request.getParameter("campaign_start_date"),
+				request.getParameter("campaign_end_date"), request.getParameter("json"));
 	}
 
 	/// DELETE CAMPAIGN WITH ID
@@ -145,32 +145,28 @@ public class MainController {
 	public String deleteCampaign(@PathVariable("cid") int cid) {
 		return cobj.deleteCampaign(cid);
 	}
-	
+
 	/// ADD PRODUCT TO CAMPAIGN
 	@RequestMapping(value = "/user/AddCampaignProduct/cid/{cid}/pid/{pid}", method = RequestMethod.POST, produces = "application/json")
-		public String addProductsToCampaign(@PathVariable("cid") int cid,@PathVariable("pid") int pid) {
-			return cobj.addProductsToCampaign(cid, pid);
-		}
-	
+	public String addProductsToCampaign(@PathVariable("cid") int cid, @PathVariable("pid") int pid) {
+		return cobj.addProductsToCampaign(cid, pid);
+	}
+
 	/// DELETE PRODUCT FROM CAMPAIGN
 	@RequestMapping(value = "/user/DeleteCampaignProduct/cid/{cid}/pid/{pid}", method = RequestMethod.DELETE, produces = "application/json")
-		public String deleteProductsToCampaign(@PathVariable("cid") int cid,@PathVariable("pid") int pid) {
-				return cobj.deleteProductsFromCampaign(cid, pid);
-		}
-	
-	
-	
+	public String deleteProductsToCampaign(@PathVariable("cid") int cid, @PathVariable("pid") int pid) {
+		return cobj.deleteProductsFromCampaign(cid, pid);
+	}
+
 	@Autowired
 	ProductService pobj;
+
 	/// READ CAMPAIGN WITH ID
 	@RequestMapping(value = "/user/readProductFromId/userid/{userid}/pid/{pid}", method = RequestMethod.GET, produces = "application/json")
-	public String readProductFromId(@PathVariable("userid") String userid,@PathVariable("pid") int pid) {
+	public String readProductFromId(@PathVariable("userid") String userid, @PathVariable("pid") int pid) {
 		return pobj.readFromId(userid, pid);
 	}
-	
-	
-	
-	
+
 //	@Autowired
 //	ClarifaiService cs;
 //	
@@ -190,7 +186,5 @@ public class MainController {
 //	   
 //	    return bos.toByteArray();
 //	}
-	
 
-	
 }

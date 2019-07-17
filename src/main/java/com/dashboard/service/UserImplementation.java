@@ -46,11 +46,12 @@ public class UserImplementation implements UserService {
 	DefaultResponse defaultresponse;
 	@Autowired
 	CommonService comservice;
-	
+
 	@Override
 	public String add(String name, String password, String email, String organisation) {
 
-		String response="";Integer userid=0;
+		String response = "";
+		Integer userid = 0;
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
@@ -62,13 +63,13 @@ public class UserImplementation implements UserService {
 			uobj.setPassword(MD5(password));
 			uobj.setActive(1);
 			session.save(uobj);
-			userid=uobj.getUserid();
+			userid = uobj.getUserid();
 			defaultresponse.setId(userid.toString());
 			tx.commit();
 			session.close();
 
 		} catch (Exception ex) {
-			logger.error(ex.toString());	
+			logger.error(ex.toString());
 			defaultresponse.setErrormsg(ex.toString());
 			defaultresponse.setStatus(false);
 			response = new Gson().toJson(defaultresponse);
@@ -90,7 +91,7 @@ public class UserImplementation implements UserService {
 	@Override
 	public String update(String userid, String name, String email, String organisation) {
 
-		String response="";
+		String response = "";
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
@@ -98,12 +99,12 @@ public class UserImplementation implements UserService {
 			Object o = session.get(User.class, userid);
 			User uobj = (User) o;
 			uobj.setOrganisation(organisation);
-			uobj.setName(name);			
+			uobj.setName(name);
 
 			tx.commit();
 			session.close();
 		} catch (Exception ex) {
-			logger.error(ex.toString());	
+			logger.error(ex.toString());
 			defaultresponse.setErrormsg(ex.toString());
 			defaultresponse.setStatus(false);
 			response = new Gson().toJson(defaultresponse);
@@ -125,7 +126,7 @@ public class UserImplementation implements UserService {
 	@Override
 	public String delete(String userid) {
 
-		String response="";
+		String response = "";
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
@@ -138,7 +139,7 @@ public class UserImplementation implements UserService {
 			tx.commit();
 			session.close();
 		} catch (Exception ex) {
-			logger.error(ex.toString());	
+			logger.error(ex.toString());
 			defaultresponse.setErrormsg(ex.toString());
 			defaultresponse.setStatus(false);
 			response = new Gson().toJson(defaultresponse);
@@ -160,7 +161,7 @@ public class UserImplementation implements UserService {
 	@Override
 	public String read(int start, int limit) {
 
-		String response="";
+		String response = "";
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
@@ -175,7 +176,7 @@ public class UserImplementation implements UserService {
 			tx.commit();
 			session.close();
 		} catch (Exception ex) {
-			logger.error(ex.toString());	
+			logger.error(ex.toString());
 			defaultresponse.setErrormsg(ex.toString());
 			defaultresponse.setStatus(false);
 			response = new Gson().toJson(defaultresponse);
@@ -195,22 +196,20 @@ public class UserImplementation implements UserService {
 	@Override
 	public String readFromId(String userid) {
 
-		
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
-		String response="";
+		String response = "";
 		List<?> list;
 		try {
-			Query<?> query = session.createQuery("SELECT U FROM User U  WHERE U.userid=" + userid);			
-			List<User> user =  (List<User>) query.getResultList();
-			
+			Query<?> query = session.createQuery("SELECT U FROM User U  WHERE U.userid=" + userid);
+			List<User> user = (List<User>) query.getResultList();
+
 			readuser.setErrormsg("");
 			readuser.setPagination(false);
 			readuser.setStatus(true);
-			
-			for(User item:user )
-			{
+
+			for (User item : user) {
 				readuserpayload.setName(item.getName());
 				readuserpayload.setEmail(item.getEmail());
 				readuserpayload.setOrganisation(item.getOrganisation());
@@ -218,10 +217,10 @@ public class UserImplementation implements UserService {
 				readuserpayload.setActive(item.getActive());
 			}
 			readuser.setPayload(readuserpayload);
-			
+
 //			User u= session.get(User.class, 1);
 //			System.out.println(u);
-			
+
 //			CriteriaBuilder builder=session.getCriteriaBuilder();
 //			CriteriaQuery<User> criteriaquery= builder.createQuery(User.class);
 //			Root<User> root= criteriaquery.from(User.class);
@@ -230,14 +229,14 @@ public class UserImplementation implements UserService {
 //			criteriaquery.where(builder.equal(root.get("userid"), userid));
 //			Query<User> query=session.createQuery(criteriaquery);
 //			List<User> user =  (List<User>) query.getResultList();
-			
+
 			response = new Gson().toJson(readuser);
-			
+
 			tx.commit();
 			session.close();
-			
+
 		} catch (Exception ex) {
-			logger.error(ex.toString());	
+			logger.error(ex.toString());
 			defaultresponse.setErrormsg(ex.toString());
 			defaultresponse.setStatus(false);
 			response = new Gson().toJson(defaultresponse);
@@ -259,40 +258,37 @@ public class UserImplementation implements UserService {
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
-		String response="";
+		String response = "";
 		List<?> list;
-		try {			
+		try {
 
-			Query<?> query = session.createQuery("SELECT U FROM User U  WHERE U.email='" + email +"' AND U.password='"+ MD5(password) +"'");			
-			List<User> user =  (List<User>) query.getResultList();
-			
-			if (!user.isEmpty())
-				{
+			Query<?> query = session.createQuery(
+					"SELECT U FROM User U  WHERE U.email='" + email + "' AND U.password='" + MD5(password) + "'");
+			List<User> user = (List<User>) query.getResultList();
+
+			if (!user.isEmpty()) {
 				readuser.setErrormsg("");
 				readuser.setPagination(false);
 				readuser.setStatus(true);
-				for(User item:user )
-				{
+				for (User item : user) {
 					readuserpayload.setName(item.getName());
 					readuserpayload.setEmail(item.getEmail());
 					readuserpayload.setOrganisation(item.getOrganisation());
 					readuserpayload.setUserid(item.getUserid());
 					readuserpayload.setActive(item.getActive());
 				}
-				readuser.setPayload(readuserpayload);				
-				}
-			else
-				{
+				readuser.setPayload(readuserpayload);
+			} else {
 				readuser.setErrormsg("Password-wrong");
 				readuser.setPagination(false);
-				readuser.setStatus(false);			
-				readuser.setPayload(null);						
-				GsonBuilder gsonBuilder = new GsonBuilder();  
-				gsonBuilder.serializeNulls();  
+				readuser.setStatus(false);
+				readuser.setPayload(null);
+				GsonBuilder gsonBuilder = new GsonBuilder();
+				gsonBuilder.serializeNulls();
 				Gson gson = gsonBuilder.create();
 				response = gson.toJson(readuser);
 
-				}
+			}
 
 //			Criteria cr = session.createCriteria(User.class).setProjection(Projections.projectionList()
 //				      .add(Projections.property("userid"), "userid")
@@ -301,7 +297,7 @@ public class UserImplementation implements UserService {
 //			cr.add(Restrictions.eq("email", email));
 //			cr.add(Restrictions.eq("password", MD5(password)));
 //			 list = cr.list();
-			
+
 //			if (!list.isEmpty())
 //			{
 //				HashMap<String, Object> map = new HashMap<String, Object>();
@@ -323,13 +319,13 @@ public class UserImplementation implements UserService {
 			tx.commit();
 			session.close();
 		} catch (Exception ex) {
-			
-			logger.error(ex.toString());	
+
+			logger.error(ex.toString());
 			defaultresponse.setErrormsg(ex.toString());
 			defaultresponse.setStatus(false);
 			response = new Gson().toJson(defaultresponse);
 			return (response);
-			
+
 		} finally {
 			try {
 				if (session != null)
@@ -355,43 +351,39 @@ public class UserImplementation implements UserService {
 		return null;
 	}
 
-
 	@Override
 	public String forgotPassword(String email) {
-		
+
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
-		String response="";
+		String response = "";
 		List<?> list;
 		try {
-			Query<?> query = session.createQuery("SELECT U FROM User U  WHERE U.email=" + email);			
-			List<User> user =  (List<User>) query.getResultList();
-			
-		
-			
-			for(User item:user )
-			{
+			Query<?> query = session.createQuery("SELECT U FROM User U  WHERE U.email=" + email);
+			List<User> user = (List<User>) query.getResultList();
+
+			for (User item : user) {
 				Object o = session.get(User.class, item.getUserid());
-				User uobj = (User) o;				
-					uobj.setPassword("sfasf64675");
-					defaultresponse.setErrormsg("");
-					defaultresponse.setStatus(true);
-					
-					 Mail mail = new Mail();
-				        mail.setFrom("no-reply@psyight.com");
-				        mail.setTo(email);
-				        mail.setSubject("Password Reset");
-				        mail.setContent("Your password has been reset to sfasf64675");	        
-				        comservice.sendSimpleMessage(mail);
-				
+				User uobj = (User) o;
+				uobj.setPassword("sfasf64675");
+				defaultresponse.setErrormsg("");
+				defaultresponse.setStatus(true);
+
+				Mail mail = new Mail();
+				mail.setFrom("no-reply@psyight.com");
+				mail.setTo(email);
+				mail.setSubject("Password Reset");
+				mail.setContent("Your password has been reset to sfasf64675");
+				comservice.sendSimpleMessage(mail);
+
 			}
-			
+
 			tx.commit();
 			session.close();
-			
+
 		} catch (Exception ex) {
-			logger.error(ex.toString());	
+			logger.error(ex.toString());
 			defaultresponse.setErrormsg(ex.toString());
 			defaultresponse.setStatus(false);
 			response = new Gson().toJson(defaultresponse);
@@ -404,13 +396,13 @@ public class UserImplementation implements UserService {
 			} catch (Exception ex) {
 			}
 		}
-		
-		return (response);   
+
+		return (response);
 	}
 
 	@Override
 	public String changePassword(String userid, String newPassword, String oldPassword) {
-		String response="";
+		String response = "";
 		defaultresponse.setErrormsg("");
 		defaultresponse.setStatus(false);
 		SessionFactory sf = HibernateUtil.getSessionFactory();
@@ -419,23 +411,20 @@ public class UserImplementation implements UserService {
 		try {
 			Object o = session.get(User.class, userid);
 			User uobj = (User) o;
-			if(oldPassword==uobj.getPassword())
-				{
+			if (oldPassword == uobj.getPassword()) {
 				uobj.setPassword(newPassword);
 				defaultresponse.setErrormsg("");
 				defaultresponse.setStatus(true);
-				}
-			else
-			{
+			} else {
 				uobj.setPassword(newPassword);
 				defaultresponse.setErrormsg("password does not match");
 				defaultresponse.setStatus(false);
-				}
+			}
 
 			tx.commit();
 			session.close();
 		} catch (Exception ex) {
-			logger.error(ex.toString());	
+			logger.error(ex.toString());
 			defaultresponse.setErrormsg(ex.toString());
 			defaultresponse.setStatus(false);
 			response = new Gson().toJson(defaultresponse);
@@ -448,7 +437,7 @@ public class UserImplementation implements UserService {
 			} catch (Exception ex) {
 			}
 		}
-		
+
 		response = new Gson().toJson(defaultresponse);
 		return (response);
 	}

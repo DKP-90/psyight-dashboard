@@ -13,15 +13,16 @@ import com.dashboard.repository.HibernateUtil;
 
 @Service
 public class ProductImageImplementation implements ProductImageService {
-	
+
 	private static Logger logger = LogManager.getLogger(ProductImageImplementation.class);
+
 	@Override
 	public String addimage(String filename, int pid) {
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
 		try {
-			ProductImage pobj=new ProductImage();
+			ProductImage pobj = new ProductImage();
 
 			pobj.setPid(pid);
 			pobj.setFilename(filename);

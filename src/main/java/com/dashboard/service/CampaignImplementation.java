@@ -35,12 +35,12 @@ import com.google.gson.Gson;
 public class CampaignImplementation implements CampaignService {
 
 	private static Logger logger = LogManager.getLogger(GroupsImplementation.class);
-	public SimpleDateFormat dateformat=new SimpleDateFormat("yyyy-MM-dd");
-	
+	public SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+
 	@Autowired
 	DefaultResponse defaultresponse;
 	@Autowired
-	CampaignDetails CampaignDetails; 
+	CampaignDetails CampaignDetails;
 	@Autowired
 	CampaignDetailsPayload CampaignDetailsPayload;
 	@Autowired
@@ -51,40 +51,39 @@ public class CampaignImplementation implements CampaignService {
 	CampaignListPayload CampaignListPayload;
 	@Autowired
 	CampaignListList CampaignListList;
-	
+
 	CampaignProducts CampaignProducts = new CampaignProducts();
-	
-	
+
 	@Override
 	public String read(String userid, int start, int limit) {
-		String response="";
+		String response = "";
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
 		List<?> list;
 		try {
-			Query<?> query = session.createQuery("SELECT C FROM Campaign C  WHERE C.userid=" + userid );
+			Query<?> query = session.createQuery("SELECT C FROM Campaign C  WHERE C.userid=" + userid);
 			query.setFirstResult(start);
 			query.setMaxResults(limit);
-			List<CampaignListList> Clist=new  ArrayList<CampaignListList>();
-			List<Campaign> Campaign=  (List<Campaign>) query.list();			
+
+			List<CampaignListList> Clist = new ArrayList<CampaignListList>();
+			List<Campaign> Campaign = (List<Campaign>) query.list();
 			CampaignList.setErrormsg("");
-			if(Campaign.size()<limit)
+			if (Campaign.size() < limit)
 				CampaignList.setPagination(false);
 			else
 				CampaignList.setPagination(true);
 			CampaignList.setStatus(true);
-			
-			for(Campaign item:Campaign )
-			{		
-				
-				CampaignListList.setCid(item.getCid());
-				CampaignListList.setCampaignName(item.getCampaign_name());
-				CampaignListList.setCampaignDesc(item.getCampaign_desc());
-				CampaignListList.setCampaignStartDate(item.getCampaign_start_date().toString());
-				CampaignListList.setCampaignEndDate(item.getCampaign_end_date().toString());
-				Clist.add(CampaignListList);
-				
+
+			for (Campaign item : Campaign) {
+				CampaignListList cll = new CampaignListList();
+				cll.setCid(item.getCid());
+				cll.setCampaignName(item.getCampaign_name());
+				cll.setCampaignDesc(item.getCampaign_desc());
+				cll.setCampaignStartDate(item.getCampaign_start_date().toString());
+				cll.setCampaignEndDate(item.getCampaign_end_date().toString());
+				Clist.add(cll);
+
 			}
 			CampaignListPayload.setCampaignListList(Clist);
 			CampaignList.setCampaignListPayload(CampaignListPayload);
@@ -106,45 +105,45 @@ public class CampaignImplementation implements CampaignService {
 		return response;
 	}
 
-
 	@Override
 	public String readFromId(String userid, int cid) {
-		String response="";
+		String response = "";
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
-		
+
 		List<?> list;
 		try {
-			//Query<?> query = session.createQuery("SELECT C FROM Campaign C JOIN FETCH C.products P  WHERE C.userid=" + userid +" AND C.cid=" + cid);
-			Query<?> query = session.createQuery("SELECT C FROM Campaign C WHERE C.userid=" + userid +" AND C.cid=" + cid);
-			List<Campaign> Campaign=  (List<Campaign>) query.list();
-			Set<CampaignProducts> cps=null;
-			Set<CampaignDetailProduct> cdps=new HashSet<CampaignDetailProduct>(); 
+			// Query<?> query = session.createQuery("SELECT C FROM Campaign C JOIN FETCH
+			// C.products P WHERE C.userid=" + userid +" AND C.cid=" + cid);
+			Query<?> query = session
+					.createQuery("SELECT C FROM Campaign C WHERE C.userid=" + userid + " AND C.cid=" + cid);
+			List<Campaign> Campaign = (List<Campaign>) query.list();
+			Set<CampaignProducts> cps = null;
+			Set<CampaignDetailProduct> cdps = new HashSet<CampaignDetailProduct>();
 			Products pobj;
 			Object p;
 			CampaignDetails.setErrormsg("");
 			CampaignDetails.setPagination(false);
 			CampaignDetails.setStatus(true);
-			for(Campaign item:Campaign )
-			{
+			for (Campaign item : Campaign) {
 				CampaignDetailsPayload.setCid(item.getCid());
 				CampaignDetailsPayload.setCampaignName(item.getCampaign_name());
 				CampaignDetailsPayload.setCampaignDesc(item.getCampaign_desc());
 				CampaignDetailsPayload.setCampaignStartDate(item.getCampaign_start_date().toString());
 				CampaignDetailsPayload.setCampaignEndDate(item.getCampaign_end_date().toString());
 				CampaignDetailsPayload.setJson(item.getJson());
-				cps=item.getCampaignProducts();
-				
-				for(CampaignProducts cpsitem:cps )
-				{System.out.println(cpsitem.getPid());
-					 p=session.get(Products.class, cpsitem.getPid());
-					 pobj = (Products) p;
-				CampaignDetailProduct.setPid(cpsitem.getPid());
-				CampaignDetailProduct.setProductName(pobj.getProduct_name());
-				cdps.add(CampaignDetailProduct);							
+				cps = item.getCampaignProducts();
+
+				for (CampaignProducts cpsitem : cps) {
+					System.out.println(cpsitem.getPid());
+					p = session.get(Products.class, cpsitem.getPid());
+					pobj = (Products) p;
+					CampaignDetailProduct.setPid(cpsitem.getPid());
+					CampaignDetailProduct.setProductName(pobj.getProduct_name());
+					cdps.add(CampaignDetailProduct);
 				}
-				
+
 			}
 			CampaignDetailsPayload.setCampaignProducts(cdps);
 			CampaignDetails.setPayload(CampaignDetailsPayload);
@@ -167,14 +166,16 @@ public class CampaignImplementation implements CampaignService {
 	}
 
 	@Override
-	public String addCampaign( String campaign_name, String campaign_desc, String campaign_start_date,String campaign_end_date, String json, int userid) {
+	public String addCampaign(String campaign_name, String campaign_desc, String campaign_start_date,
+			String campaign_end_date, String json, int userid) {
 
-		String response="";Integer cid=0;
+		String response = "";
+		Integer cid = 0;
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
 		try {
-			Campaign cobj=new Campaign();
+			Campaign cobj = new Campaign();
 
 			cobj.setCampaign_name(campaign_name);
 			cobj.setCampaign_desc(campaign_desc);
@@ -184,12 +185,12 @@ public class CampaignImplementation implements CampaignService {
 			cobj.setActive(1);
 			cobj.setJson(json);
 			session.save(cobj);
-			cid=cobj.getCid();
+			cid = cobj.getCid();
 			defaultresponse.setId(cid.toString());
 			tx.commit();
 			session.close();
 		} catch (Exception ex) {
-			logger.error(ex.toString());	
+			logger.error(ex.toString());
 			defaultresponse.setErrormsg(ex.toString());
 			defaultresponse.setStatus(false);
 			response = new Gson().toJson(defaultresponse);
@@ -207,18 +208,19 @@ public class CampaignImplementation implements CampaignService {
 		response = new Gson().toJson(defaultresponse);
 		return (response);
 	}
-	
-	@Override
-	public String updateCampaign(int cid, String campaign_name, String campaign_desc, String campaign_start_date,String campaign_end_date, String json) {
 
-		String response="";
+	@Override
+	public String updateCampaign(int cid, String campaign_name, String campaign_desc, String campaign_start_date,
+			String campaign_end_date, String json) {
+
+		String response = "";
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
 		try {
-			
-			Object c = session.get(Campaign.class, cid);			
-			Campaign cobj = (Campaign) c;			
+
+			Object c = session.get(Campaign.class, cid);
+			Campaign cobj = (Campaign) c;
 
 			cobj.setCampaign_name(campaign_name);
 			cobj.setCampaign_desc(campaign_desc);
@@ -229,7 +231,7 @@ public class CampaignImplementation implements CampaignService {
 			tx.commit();
 			session.close();
 		} catch (Exception ex) {
-			logger.error(ex.toString());	
+			logger.error(ex.toString());
 			defaultresponse.setErrormsg(ex.toString());
 			defaultresponse.setStatus(false);
 			response = new Gson().toJson(defaultresponse);
@@ -247,11 +249,10 @@ public class CampaignImplementation implements CampaignService {
 		response = new Gson().toJson(defaultresponse);
 		return (response);
 	}
-	
 
 	@Override
 	public String deleteCampaign(int cid) {
-		String response="";
+		String response = "";
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
@@ -264,7 +265,7 @@ public class CampaignImplementation implements CampaignService {
 			tx.commit();
 			session.close();
 		} catch (Exception ex) {
-			logger.error(ex.toString());	
+			logger.error(ex.toString());
 			defaultresponse.setErrormsg(ex.toString());
 			defaultresponse.setStatus(false);
 			response = new Gson().toJson(defaultresponse);
@@ -283,23 +284,22 @@ public class CampaignImplementation implements CampaignService {
 		return (response);
 	}
 
-
 	@Override
 	public String addProductsToCampaign(int cid, int pid) {
-		String response="";
+		String response = "";
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
 		try {
-			CampaignProducts cobj=new CampaignProducts();
+			CampaignProducts cobj = new CampaignProducts();
 			cobj.setPid(pid);
 			cobj.setCid(cid);
-			cobj.setActive(1);			
+			cobj.setActive(1);
 			session.save(cobj);
 			tx.commit();
 			session.close();
 		} catch (Exception ex) {
-			logger.error(ex.toString());	
+			logger.error(ex.toString());
 			defaultresponse.setErrormsg(ex.toString());
 			defaultresponse.setStatus(false);
 			response = new Gson().toJson(defaultresponse);
@@ -317,20 +317,21 @@ public class CampaignImplementation implements CampaignService {
 		response = new Gson().toJson(defaultresponse);
 		return (response);
 	}
-	
+
 	@Override
 	public String deleteProductsFromCampaign(int cid, int pid) {
-		String response="";
+		String response = "";
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session = sf.openSession();
 		Transaction tx = session.beginTransaction();
 		try {
-			Query<?> query = session.createQuery("DELETE FROM CampaignProducts  WHERE C.pid=" + pid +" AND C.cid=" + cid);
+			Query<?> query = session
+					.createQuery("DELETE FROM CampaignProducts  WHERE C.pid=" + pid + " AND C.cid=" + cid);
 			query.executeUpdate();
 			tx.commit();
 			session.close();
 		} catch (Exception ex) {
-			logger.error(ex.toString());	
+			logger.error(ex.toString());
 			defaultresponse.setErrormsg(ex.toString());
 			defaultresponse.setStatus(false);
 			response = new Gson().toJson(defaultresponse);
