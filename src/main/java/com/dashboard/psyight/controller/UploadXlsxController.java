@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,6 +46,10 @@ public class UploadXlsxController {
             @RequestParam("file") MultipartFile uploadfile, @RequestParam("userid") String userid, @RequestParam("gid") String gid, @RequestParam("groupname") String groupname) {
 
         logger.debug("Single file upload!");
+        {
+        File dir = new File(UPLOADED_FOLDER);
+        if (!dir.exists()) dir.mkdirs();
+        }
 
         if (uploadfile.isEmpty()) {
             return new ResponseEntity("please select a file!", HttpStatus.OK);

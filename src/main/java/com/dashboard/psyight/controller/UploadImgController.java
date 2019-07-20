@@ -55,7 +55,10 @@ public class UploadImgController {
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile uploadfile, @RequestParam("userid") String userid , @RequestParam("pid") int pid) {
 
         logger.debug("Single file upload!");
-
+        {
+        File dir = new File(UPLOADED_FOLDER);
+        if (!dir.exists()) dir.mkdirs();
+        }
         if (uploadfile.isEmpty()) {
             return new ResponseEntity("please select a file!", HttpStatus.OK);
         }
