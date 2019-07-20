@@ -136,12 +136,12 @@ public class CampaignImplementation implements CampaignService {
 				cps = item.getCampaignProducts();
 
 				for (CampaignProducts cpsitem : cps) {
-					System.out.println(cpsitem.getPid());
+					CampaignDetailProduct cdp=new CampaignDetailProduct();
 					p = session.get(Products.class, cpsitem.getPid());
 					pobj = (Products) p;
-					CampaignDetailProduct.setPid(cpsitem.getPid());
-					CampaignDetailProduct.setProductName(pobj.getProduct_name());
-					cdps.add(CampaignDetailProduct);
+					cdp.setPid(cpsitem.getPid());
+					cdp.setProductName(pobj.getProduct_name());
+					cdps.add(cdp);
 				}
 
 			}
