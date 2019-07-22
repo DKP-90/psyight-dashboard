@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.dashboard.model.Campaign;
 import com.dashboard.model.CampaignProducts;
 import com.dashboard.model.Groups;
+import com.dashboard.model.ProductImage;
 import com.dashboard.model.Products;
 import com.dashboard.repository.HibernateUtil;
 import com.dashboard.response.campaigndetails.CampaignDetails;
@@ -121,6 +123,8 @@ public class CampaignImplementation implements CampaignService {
 			List<Campaign> Campaign = (List<Campaign>) query.list();
 			Set<CampaignProducts> cps = null;
 			Set<CampaignDetailProduct> cdps = new HashSet<CampaignDetailProduct>();
+			Set <ProductImage> pi=new HashSet<ProductImage>();
+			List<ProductImage> imagelist= null;
 			Products pobj;
 			Object p;
 			CampaignDetails.setErrormsg("");
@@ -141,6 +145,9 @@ public class CampaignImplementation implements CampaignService {
 					pobj = (Products) p;
 					cdp.setPid(cpsitem.getPid());
 					cdp.setProductName(pobj.getProduct_name());
+					pi=pobj.getImages();
+					imagelist = new ArrayList<>(pi);
+					cdp.setProduct_image(imagelist.get(0));
 					cdps.add(cdp);
 				}
 
@@ -326,7 +333,7 @@ public class CampaignImplementation implements CampaignService {
 		Transaction tx = session.beginTransaction();
 		try {
 			Query<?> query = session
-					.createQuery("DELETE FROM CampaignProducts  WHERE C.pid=" + pid + " AND C.cid=" + cid);
+					.createQuery("DELETE FROM CampaignProducts C WHERE C.pid=" + pid + " AND C.cid=" + cid);
 			query.executeUpdate();
 			tx.commit();
 			session.close();
