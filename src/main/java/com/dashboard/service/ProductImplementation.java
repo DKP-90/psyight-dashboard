@@ -12,6 +12,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.dashboard.model.Campaign;
@@ -73,7 +74,9 @@ public class ProductImplementation implements ProductService {
 				for (CampaignProducts cpsitem : cps) {
 					c = session.get(Campaign.class, cpsitem.getCid());
 					cobj = (Campaign) c;
-					Campaignlist cl = new Campaignlist();
+					//Campaignlist cl = new Campaignlist();
+					AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Campaignlist.class);
+					Campaignlist cl = context.getBean(Campaignlist.class);
 					cl.setCid(cobj.getCid());
 					cl.setCampaignName(cobj.getCampaign_name());
 					cl.setCampaignDesc(cobj.getCampaign_desc());

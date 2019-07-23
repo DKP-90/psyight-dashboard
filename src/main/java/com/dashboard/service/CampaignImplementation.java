@@ -2,9 +2,7 @@ package com.dashboard.service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -15,22 +13,21 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.dashboard.model.Campaign;
 import com.dashboard.model.CampaignProducts;
-import com.dashboard.model.Groups;
 import com.dashboard.model.ProductImage;
 import com.dashboard.model.Products;
 import com.dashboard.repository.HibernateUtil;
+import com.dashboard.response.campaigndetails.CampaignDetailProduct;
 import com.dashboard.response.campaigndetails.CampaignDetails;
 import com.dashboard.response.campaigndetails.CampaignDetailsPayload;
-import com.dashboard.response.campaigndetails.CampaignDetailProduct;
 import com.dashboard.response.campaignlist.CampaignList;
 import com.dashboard.response.campaignlist.CampaignListList;
 import com.dashboard.response.campaignlist.CampaignListPayload;
 import com.dashboard.response.defaultresponse.DefaultResponse;
-import com.dashboard.response.productdetails.Campaignlist;
 import com.google.gson.Gson;
 
 @Service
@@ -76,16 +73,18 @@ public class CampaignImplementation implements CampaignService {
 			else
 				CampaignList.setPagination(true);
 			CampaignList.setStatus(true);
+					
 
 			for (Campaign item : Campaign) {
-				CampaignListList cll = new CampaignListList();
+				AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(CampaignListList.class);
+				CampaignListList cll = context.getBean(CampaignListList.class);
 				cll.setCid(item.getCid());
 				cll.setCampaignName(item.getCampaign_name());
 				cll.setCampaignDesc(item.getCampaign_desc());
 				cll.setCampaignStartDate(item.getCampaign_start_date().toString());
 				cll.setCampaignEndDate(item.getCampaign_end_date().toString());
-				Clist.add(cll);
-
+				Clist.add(cll);				
+				
 			}
 			CampaignListPayload.setCampaignListList(Clist);
 			CampaignList.setCampaignListPayload(CampaignListPayload);
@@ -140,7 +139,9 @@ public class CampaignImplementation implements CampaignService {
 				cps = item.getCampaignProducts();
 
 				for (CampaignProducts cpsitem : cps) {
-					CampaignDetailProduct cdp=new CampaignDetailProduct();
+					//CampaignDetailProduct cdp=new CampaignDetailProduct();
+					AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(CampaignDetailProduct.class);
+					CampaignDetailProduct cdp = context.getBean(CampaignDetailProduct.class);
 					p = session.get(Products.class, cpsitem.getPid());
 					pobj = (Products) p;
 					cdp.setPid(cpsitem.getPid());

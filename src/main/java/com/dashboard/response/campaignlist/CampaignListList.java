@@ -88,9 +88,9 @@ public class CampaignListList {
 
 	@Override
 	public String toString() {
-		return "CampaignListList [cid=" + cid + ", userid=" + userid + ", campaignName=" + campaignName
-				+ ", campaignDesc=" + campaignDesc + ", campaignStartDate=" + campaignStartDate + ", campaignEndDate="
-				+ campaignEndDate + ", active=" + active + "]";
+		return "CampaignListList [hashCode()=" + hashCode() + "]";
 	}
+
+
 
 }
